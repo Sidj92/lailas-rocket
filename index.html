@@ -619,7 +619,193 @@ const DAY7_TASKS = [
     ] }
 ];
 
-const AUTHORED = {1:DAY1_TASKS, 2:DAY2_TASKS, 3:DAY3_TASKS, 4:DAY4_TASKS, 5:DAY5_TASKS, 6:DAY6_TASKS, 7:DAY7_TASKS};
+/* ===== Week 1 extra questions — doubles each day to 4 math + 2 reading (8 questions) ===== */
+const DAY1_EXTRA = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila\'s class makes rocket badges. Each of the <b>32</b> students makes <b>15</b> badges. How many badges do they make in all?',
+    choices:['480 badges','450 badges','470 badges','320 badges'], answer:0,
+    hint:[ '32 &times; 5 &rarr; 160', '32 &times; 10 &rarr; 320', '160 + 320 &rarr; 480' ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila\'s rocket travels <b>214</b> miles each hour. How far does it travel in <b>26</b> hours? (Type just the number.)',
+    answers:['5564','5,564'],
+    hint:[ '214 &times; 6 &rarr; 1284', '214 &times; 20 &rarr; 4280', '1284 + 4280 &rarr; 5564' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The Lost Key',
+    passage:'Sam searched his pockets for the third time, but the house key was gone. '+
+            'Rain began to fall as he sat on the cold front step, unsure what to do. '+
+            'Then he remembered the spare key his mom always hid beneath the blue flowerpot. '+
+            'He tipped the pot, and there it was, glinting in the porch light. '+
+            'Grinning, Sam unlocked the door just as the storm finally broke loose.',
+    questions:[
+      { kind:'mc', prompt:'What <b>problem</b> does Sam face in this story?',
+        choices:['He is locked out of his house','He lost his umbrella','He is late for school','He cannot find his shoes'],
+        answer:0, hint:['Look at the beginning of the story','His house key is gone &rarr; he is locked out'] },
+      { kind:'text', prompt:'What does Sam use to solve his problem? (A few words.)',
+        answers:['spare key','the spare key','a spare key','flowerpot key','key under the flowerpot'],
+        hint:['Look near the end of the story','He finds the spare key hidden under the flowerpot'] }
+    ] }
+];
+
+const DAY2_EXTRA = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila jogs <b>2.4</b> km, then <b>3.75</b> km, then <b>1.6</b> km. How far does she jog in all?',
+    choices:['7.75 km','7.65 km','6.75 km','8.75 km'], answer:0,
+    hint:[ 'Line up the decimal points', '2.40 + 3.75 &rarr; 6.15', '6.15 + 1.60 &rarr; 7.75' ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila\'s water bottle holds <b>1.5</b> liters. She drinks <b>0.85</b> liters. How many liters are left? (Type just the number.)',
+    answers:['0.65','0.65 l','0.65 liters'],
+    hint:[ 'Line up the decimals &rarr; 1.50 &minus; 0.85', 'Hundredths &rarr; 0 &minus; 5, borrow &rarr; 10 &minus; 5 = 5', 'Tenths &rarr; 4 &minus; 8, borrow &rarr; 14 &minus; 8 = 6', 'Answer &rarr; 0.65' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The Little Seed',
+    passage:'Nadia planted a tiny sunflower seed in a paper cup and set it on the sunny windowsill. '+
+            'For days nothing happened, and she wondered if she had done something wrong. '+
+            'She kept watering it just a little each morning anyway. '+
+            'One bright Monday, a small green sprout finally pushed up through the soil. '+
+            'Nadia learned that good things can take time and patience.',
+    questions:[
+      { kind:'mc', prompt:'What is the <b>theme</b>, or lesson, of this story?',
+        choices:['Sunflowers need lots of water','Good things take time and patience','Paper cups make good pots','Mornings are the best time of day'],
+        answer:1, hint:['A theme is the big lesson','The seed grows slowly &rarr; patience is rewarded'] },
+      { kind:'text', prompt:'Choose one word that best describes Nadia. (One word.)',
+        answers:['patient','hopeful','caring','persistent','determined','kind','gentle'],
+        hint:['Think about how she waits and keeps watering','She waits calmly &rarr; she is patient'] }
+    ] }
+];
+
+const DAY3_EXTRA = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila mixes '+frac(1,2)+' cup of red paint with '+frac(1,3)+' cup of blue paint. How much paint does she have in all?',
+    choices:[frac(2,5),frac(5,6),frac(3,6),frac(1,6)], answer:1,
+    hint:[ 'Common denominator &rarr; 6', frac(1,2)+' &rarr; '+frac(3,6), frac(1,3)+' &rarr; '+frac(2,6), 'Add &rarr; 3 + 2 = 5 &rarr; '+frac(5,6) ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila has '+frac(7,8)+' of a ribbon and uses '+frac(1,4)+' of a ribbon to wrap a gift. How much ribbon is left? (Type as a fraction, like 1/2.)',
+    answers:['5/8'],
+    hint:[ 'Common denominator &rarr; 8', frac(1,4)+' &rarr; '+frac(2,8), 'Subtract &rarr; 7 &minus; 2 = 5 &rarr; '+frac(5,8) ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'Poem: "Rain Song"',
+    passage:'The rain taps softly on the pane,<br>'+
+            'A gentle, silver, dancing rain.<br>'+
+            'It drums a tune on roof and street,<br>'+
+            'A cheerful, tapping, watery beat.',
+    questions:[
+      { kind:'mc', prompt:'Which pair of words at the ends of the lines <b>rhyme</b>?',
+        choices:['pane and rain','pane and street','rain and street','roof and beat'],
+        answer:0, hint:['Say the last word of each line out loud','&ldquo;pane&rdquo; and &ldquo;rain&rdquo; &rarr; both end in the &minus;ain sound'] },
+      { kind:'text', prompt:'The poet uses describing words to paint a picture of the rain. Write one word the poet uses to describe the rain. (One word.)',
+        answers:['soft','softly','gentle','silver','dancing','cheerful','tapping','watery'],
+        hint:['Look for the describing words','For example: gentle, silver, or dancing'] }
+    ] }
+];
+
+const DAY4_EXTRA = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila eats '+frac(1,4)+' of '+frac(2,3)+' of a pizza. What fraction of the whole pizza did she eat?',
+    choices:[frac(1,6),frac(3,7),frac(2,7),frac(3,12)], answer:0,
+    hint:[ 'Multiply straight across', 'Numerators &rarr; 1 &times; 2 = 2', 'Denominators &rarr; 4 &times; 3 = 12', 'Simplify &rarr; '+frac(2,12)+' = '+frac(1,6) ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila plants flowers in '+frac(3,4)+' of a garden. She waters '+frac(2,3)+' of the planted part. What fraction of the whole garden did she water? (Type as a fraction, like 1/2.)',
+    answers:['1/2','6/12'],
+    hint:[ 'Multiply straight across &rarr; '+frac(3,4)+' &times; '+frac(2,3), 'Numerators &rarr; 3 &times; 2 = 6', 'Denominators &rarr; 4 &times; 3 = 12', 'Simplify &rarr; '+frac(6,12)+' = '+frac(1,2) ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The Busy City',
+    passage:'The city street was a roaring river of cars, buses, and taxis. '+
+            'Horns sang out like impatient birds all morning long. '+
+            'The tall buildings stood as still as sleeping giants above the rush. '+
+            'Laila felt as small as an ant, but she was excited to be part of it all.',
+    questions:[
+      { kind:'mc', prompt:'&ldquo;The city street was a roaring river of cars&rdquo; compares the street to a river without using &ldquo;like&rdquo; or &ldquo;as.&rdquo; This is a:',
+        choices:['simile','metaphor','rhyme','fact'],
+        answer:1, hint:['A comparison WITHOUT &ldquo;like&rdquo; or &ldquo;as&rdquo;','Calling the street a river directly &rarr; a metaphor'] },
+      { kind:'text', prompt:'&ldquo;As small as an ant&rdquo; compares two things using the word &ldquo;as.&rdquo; What is this kind of comparison called? (One word.)',
+        answers:['simile','a simile'],
+        hint:['It uses &ldquo;as ... as&rdquo; to compare','A comparison with &ldquo;like&rdquo; or &ldquo;as&rdquo; &rarr; a simile'] }
+    ] }
+];
+
+const DAY5_EXTRA = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila solves the equation <b>5 &times; n = 45</b>. What is the value of <b>n</b>?',
+    choices:['7','8','9','40'], answer:2,
+    hint:[ 'Ask: 5 times what equals 45?', 'Use the opposite operation &rarr; 45 &divide; 5', '45 &divide; 5 &rarr; 9' ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila writes <b>63 &divide; ? = 7</b>. What number belongs in the box? (Type just the number.)',
+    answers:['9'],
+    hint:[ 'Ask: 63 divided by what equals 7?', 'Think 7 &times; ? = 63', '63 &divide; 7 &rarr; 9' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'Honeybees at Work',
+    passage:'Honeybees are some of the hardest workers in all of nature. '+
+            'A single hive can hold tens of thousands of bees, and each one has an important job. '+
+            'Some bees gather nectar from flowers, while others guard the hive or care for the young. '+
+            'As bees move from flower to flower, they help plants grow by spreading pollen. '+
+            'Without busy honeybees, many of the foods we love would be much harder to grow.',
+    questions:[
+      { kind:'mc', prompt:'What is the <b>central idea</b> of this passage?',
+        choices:['Bees like colorful flowers','Honeybees work hard and help plants grow','Beehives are very large','Bees can sting people'],
+        answer:1, hint:['The central idea is what the whole passage is mostly about','Every detail shows how bees work and help &rarr; hardworking helpers'] },
+      { kind:'text', prompt:'According to the passage, what do bees spread from flower to flower? (One word.)',
+        answers:['pollen'],
+        hint:['Look for the sentence about helping plants grow','They spread pollen'] }
+    ] }
+];
+
+const DAY6_EXTRA = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila\'s rectangular rug is <b>6 feet</b> long and <b>4 feet</b> wide. What is the <b>area</b> of the rug?',
+    choices:['10 square feet','20 square feet','24 square feet','48 square feet'], answer:2,
+    hint:[ 'Area of a rectangle &rarr; length &times; width', '6 &times; 4 &rarr; 24', 'Answer &rarr; 24 square feet' ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila tapes up a square poster with sides of <b>9 inches</b> each. What is the <b>perimeter</b> (the distance all the way around)? (Type just the number.)',
+    answers:['36','36 in','36 inches'],
+    hint:[ 'A square has 4 equal sides', 'Perimeter &rarr; 9 + 9 + 9 + 9', 'Or 9 &times; 4 &rarr; 36 inches' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The Class Garden',
+    passage:'Laila\'s class decided to grow a vegetable garden behind the school. '+
+            'First, they cleared away the weeds and turned the soil until it was soft. '+
+            'Next, they planted neat rows of carrots, beans, and tomatoes. '+
+            'Every day, students took turns watering the plants and pulling weeds. '+
+            'By the end of spring, the whole class shared a big salad made from vegetables they had grown themselves.',
+    questions:[
+      { kind:'mc', prompt:'Which sentence is the <b>best summary</b> of the whole story?',
+        choices:['Laila\'s class does not like weeds','Laila\'s class plants and cares for a garden and enjoys the vegetables they grow','Carrots grow in neat rows','Spring is a warm season'],
+        answer:1, hint:['A summary retells only the most important events in order','Planted a garden &rarr; cared for it &rarr; shared the vegetables'] },
+      { kind:'text', prompt:'Which word best describes Laila\'s class in this story? (One word.)',
+        answers:['hardworking','helpful','patient','responsible','cooperative','caring','dedicated'],
+        hint:['Think about how they work on the garden every day','They work hard together &rarr; hardworking'] }
+    ] }
+];
+
+const DAY7_EXTRA = [
+  { kind:'mc', tag:'math',
+    prompt:'<b>Review — Multiplication:</b> Laila packs <b>18</b> boxes with <b>25</b> crayons in each box. How many crayons is that in all?',
+    choices:['360 crayons','450 crayons','400 crayons','540 crayons'], answer:1,
+    hint:[ '18 &times; 5 &rarr; 90', '18 &times; 20 &rarr; 360', '90 + 360 &rarr; 450' ] },
+  { kind:'text', tag:'math',
+    prompt:'<b>Review — Fractions:</b> Laila multiplies '+frac(2,3)+' &times; '+frac(3,5)+'. What is the product? (Type as a fraction, like 1/2.)',
+    answers:['2/5','6/15'],
+    hint:[ 'Multiply straight across', 'Numerators &rarr; 2 &times; 3 = 6', 'Denominators &rarr; 3 &times; 5 = 15', 'Simplify &rarr; '+frac(6,15)+' = '+frac(2,5) ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The Helpful Robot',
+    passage:'In the year 3000, a small robot named Bolt helped the Diaz family every single day. '+
+            'Each morning, Bolt made a warm breakfast and watered all the plants. '+
+            'When the children needed help with homework, Bolt explained the tricky parts patiently. '+
+            'One night the power went out, and Bolt used its glowing eyes to light the dark hallway. '+
+            'The whole family agreed that Bolt was the most helpful member of the house.',
+    questions:[
+      { kind:'mc', prompt:'What is the <b>central idea</b> of this passage?',
+        choices:['Robots are scary','Bolt the robot helps the family in many ways','Breakfast is the most important meal','The power went out one night'],
+        answer:1, hint:['The central idea is what the whole passage is mostly about','Every detail shows Bolt helping &rarr; Bolt is very helpful'] },
+      { kind:'text', prompt:'Choose one word that best describes Bolt. (One word.)',
+        answers:['helpful','kind','patient','useful','caring','smart','dependable'],
+        hint:['Think about everything Bolt does for the family','Bolt does many helpful things &rarr; helpful'] }
+    ] }
+];
+
+/* Each Week 1 day = original tasks + extra tasks appended (keeps saved question indices stable) */
+const AUTHORED = {
+  1: DAY1_TASKS.concat(DAY1_EXTRA), 2: DAY2_TASKS.concat(DAY2_EXTRA), 3: DAY3_TASKS.concat(DAY3_EXTRA),
+  4: DAY4_TASKS.concat(DAY4_EXTRA), 5: DAY5_TASKS.concat(DAY5_EXTRA), 6: DAY6_TASKS.concat(DAY6_EXTRA),
+  7: DAY7_TASKS.concat(DAY7_EXTRA)
+};
 
 /* ===================== Assemble curriculum ===================== */
 function buildDay(std){
