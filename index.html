@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Laila's 6th Grade Rocket Launch</title>
+<style>
+  :root{
+    --amethyst:#4a1e73;
+    --amethyst-2:#5e2a91;
+    --violet:#7c3aed;
+    --violet-bright:#8b5cf6;
+    --violet-hover:#6d28d9;
+    --lavender:#f3edfb;
+    --lavender-2:#e9def8;
+    --lavender-card:#faf7ff;
+    --ink:#2b1a3d;
+    --muted:#6b5b81;
+    --good:#1f9d55;
+    --good-bg:#e4f7ec;
+    --bad:#c0392b;
+    --bad-bg:#fdece9;
+    --white:#ffffff;
+    --shadow:0 6px 20px rgba(74,30,115,.18);
+    --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:linear-gradient(160deg,var(--lavender) 0%,var(--lavender-2) 100%);
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  header.app-header{
+    background:linear-gradient(135deg,var(--amethyst) 0%,var(--amethyst-2) 60%,var(--violet) 100%);
+    color:var(--white);
+    padding:22px 24px 26px;
+    box-shadow:var(--shadow);
+    border-bottom-left-radius:24px;
+    border-bottom-right-radius:24px;
+  }
+  .header-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .rocket{font-size:2.2rem;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));}
+  h1{margin:0;font-size:1.7rem;letter-spacing:.3px;}
+  .subtitle{margin:2px 0 0;font-size:.95rem;opacity:.9;}
+  .welcome{margin:4px 0 0;font-size:1.05rem;font-weight:600;}
+
+  .progress-wrap{margin-top:18px;}
+  .progress-labels{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;font-size:.9rem;}
+  .progress-track{
+    height:22px;background:rgba(255,255,255,.25);border-radius:999px;overflow:hidden;
+    border:1px solid rgba(255,255,255,.35);
+  }
+  .progress-fill{
+    height:100%;width:0%;
+    background:linear-gradient(90deg,#a78bfa,#c4b5fd,#ffffff);
+    border-radius:999px;
+    transition:width .6s cubic-bezier(.4,0,.2,1);
+    display:flex;align-items:center;justify-content:flex-end;
+  }
+  .progress-pct{font-weight:700;font-size:1rem;}
+  .streak{font-size:.85rem;opacity:.9;}
+
+  main{max-width:1200px;margin:0 auto;padding:22px 18px 60px;}
+  .weeks-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .week-col{background:rgba(255,255,255,.55);border-radius:var(--radius);padding:12px;box-shadow:0 2px 10px rgba(74,30,115,.08);}
+  .week-title{
+    text-align:center;font-weight:700;color:var(--amethyst);
+    font-size:1rem;margin:4px 0 10px;padding-bottom:8px;border-bottom:2px dashed var(--lavender-2);
+  }
+  .week-title small{display:block;font-weight:500;color:var(--muted);font-size:.72rem;margin-top:2px;}
+
+  .day-card{
+    background:var(--lavender-card);
+    border:2px solid var(--lavender-2);
+    border-radius:12px;
+    padding:10px 12px;margin-bottom:10px;cursor:pointer;
+    transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease;
+    position:relative;
+  }
+  .day-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--violet-bright);}
+  .day-card:focus-visible{outline:3px solid var(--violet);outline-offset:2px;}
+  .day-card .day-num{font-weight:700;color:var(--violet-hover);font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;}
+  .day-card .day-name{font-size:.9rem;font-weight:600;margin-top:2px;line-height:1.2;}
+  .day-card .day-std{font-size:.68rem;color:var(--muted);margin-top:4px;line-height:1.3;}
+  .day-card.done{background:linear-gradient(135deg,#ede9fe,#ddd6fe);border-color:var(--violet);}
+  .day-card .check-badge{
+    position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;
+    background:var(--violet);color:#fff;display:none;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;
+  }
+  .day-card.done .check-badge{display:flex;}
+  .day-card.review{border-style:dashed;background:#f6f0ff;}
+
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(43,26,61,.55);backdrop-filter:blur(3px);
+    display:none;align-items:flex-start;justify-content:center;z-index:50;padding:24px 12px;overflow-y:auto;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal{
+    background:var(--white);border-radius:20px;max-width:760px;width:100%;box-shadow:var(--shadow);
+    overflow:hidden;position:relative;animation:pop .25s ease;
+  }
+  @keyframes pop{from{transform:scale(.94);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .modal-head{background:linear-gradient(135deg,var(--amethyst),var(--violet));color:#fff;padding:18px 22px;}
+  .modal-head .m-day{font-size:.8rem;text-transform:uppercase;letter-spacing:1px;opacity:.9;}
+  .modal-head h2{margin:2px 0 0;font-size:1.35rem;}
+  .modal-head .m-stds{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;}
+  .std-chip{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 10px;font-size:.72rem;}
+  .modal-close{
+    position:absolute;top:14px;right:16px;background:rgba(255,255,255,.2);border:none;color:#fff;
+    width:36px;height:36px;border-radius:50%;font-size:1.3rem;cursor:pointer;line-height:1;
+  }
+  .modal-close:hover{background:rgba(255,255,255,.35);}
+  .modal-body{padding:20px 22px 26px;max-height:70vh;overflow-y:auto;}
+
+  .task{border:1px solid var(--lavender-2);border-radius:14px;padding:16px;margin-bottom:18px;background:var(--lavender-card);}
+  .task-tag{display:inline-block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+    padding:3px 9px;border-radius:999px;margin-bottom:10px;}
+  .tag-math{background:#ede9fe;color:var(--violet-hover);}
+  .tag-ela{background:#fce7f3;color:#9d174d;}
+  .task.placeholder{opacity:.92;border-style:dashed;}
+  .placeholder-note{font-size:.72rem;color:var(--muted);font-style:italic;margin-top:4px;}
+
+  .q-prompt{font-size:1.05rem;line-height:1.5;margin:0 0 12px;}
+
+  .ela-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:640px){.ela-wrap{grid-template-columns:1fr;}}
+  .passage{
+    background:#fff;border:1px solid #f0d9ea;border-left:5px solid #db2777;border-radius:12px;
+    padding:14px 16px;font-size:1rem;line-height:1.6;color:#3a2b46;
+  }
+  .passage h4{margin:0 0 8px;color:#9d174d;font-size:.95rem;}
+  .ela-questions{display:flex;flex-direction:column;gap:14px;}
+
+  .choices{display:flex;flex-direction:column;gap:8px;}
+  .choice{
+    display:flex;align-items:center;gap:10px;padding:10px 12px;border:2px solid var(--lavender-2);
+    border-radius:10px;cursor:pointer;background:#fff;transition:.12s;font-size:1rem;
+  }
+  .choice:hover{border-color:var(--violet-bright);}
+  .choice input{accent-color:var(--violet);width:18px;height:18px;}
+  .choice.correct{border-color:var(--good);background:var(--good-bg);}
+  .choice.wrong{border-color:var(--bad);background:var(--bad-bg);}
+
+  .text-input{
+    width:100%;padding:11px 13px;border:2px solid var(--lavender-2);border-radius:10px;font-size:1rem;font-family:inherit;
+  }
+  .text-input:focus{outline:none;border-color:var(--violet);}
+
+  .btn{
+    background:var(--violet);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:.95rem;
+    font-weight:600;cursor:pointer;transition:.12s;margin-top:12px;
+  }
+  .btn:hover{background:var(--violet-hover);}
+  .btn:active{transform:scale(.97);}
+  .btn.secondary{background:#fff;color:var(--violet-hover);border:2px solid var(--violet-bright);}
+
+  .feedback{margin-top:12px;border-radius:10px;padding:12px 14px;font-size:.95rem;display:none;}
+  .feedback.show{display:block;animation:pop .2s ease;}
+  .feedback.ok{background:var(--good-bg);color:#166534;border:1px solid #a7e0bf;}
+  .feedback.no{background:var(--bad-bg);color:#7f1d1d;border:1px solid #f3b6ae;}
+  .feedback .fb-title{font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+
+  .hint-steps{display:flex;flex-direction:column;gap:4px;margin-top:6px;}
+  .hint-step{display:flex;align-items:center;gap:8px;font-size:1rem;background:#fff;border:1px dashed #f3b6ae;border-radius:8px;padding:6px 10px;}
+  .hint-step .num{background:#fde8e5;color:var(--bad);border-radius:6px;padding:0 7px;font-weight:700;font-size:.85rem;}
+
+  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 3px;line-height:1;position:relative;top:-1px;}
+  .frac .num{padding:0 4px 2px;border-bottom:2px solid currentColor;}
+  .frac .den{padding:2px 4px 0;}
+  sup{font-size:.72em;}
+
+  .day-complete-banner{
+    background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;border-radius:12px;padding:14px 16px;
+    text-align:center;font-weight:600;font-size:1.05rem;margin-bottom:16px;display:none;
+  }
+  .day-complete-banner.show{display:block;}
+
+  .modal-footer{padding:0 22px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+  .task-progress{font-size:.85rem;color:var(--muted);}
+
+  .analytics-btn{
+    margin-left:auto;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.45);color:#fff;
+    padding:9px 16px;border-radius:999px;font-size:.9rem;font-weight:600;cursor:pointer;transition:.12s;white-space:nowrap;
+  }
+  .analytics-btn:hover{background:rgba(255,255,255,.32);}
+  .analytics-btn:focus-visible{outline:3px solid #fff;outline-offset:2px;}
+
+  .stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:6px;}
+  .stat-card{background:var(--lavender-card);border:1px solid var(--lavender-2);border-radius:12px;padding:14px;text-align:center;}
+  .stat-card .big{font-size:1.6rem;font-weight:800;color:var(--violet-hover);line-height:1.1;}
+  .stat-card .lbl{font-size:.75rem;color:var(--muted);margin-top:4px;}
+  .stats-section h3{color:var(--amethyst);font-size:1rem;margin:18px 0 8px;}
+  .topic-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--lavender-2);border-radius:10px;margin-bottom:7px;background:#fff;}
+  .topic-row .t-name{font-size:.9rem;font-weight:600;}
+  .topic-row .t-std{font-size:.68rem;color:var(--muted);margin-top:1px;}
+  .topic-row .t-badge{font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;}
+  .badge-wrong{background:var(--bad-bg);color:var(--bad);}
+  .badge-good{background:var(--good-bg);color:#166534;}
+  .bar-mini{height:7px;border-radius:999px;background:var(--lavender-2);overflow:hidden;margin-top:5px;max-width:180px;}
+  .bar-mini > div{height:100%;background:linear-gradient(90deg,var(--violet),var(--violet-bright));}
+
+  #confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:100;display:none;}
+
+  footer{text-align:center;color:var(--muted);font-size:.8rem;padding:10px 0 30px;}
+
+  @media (max-width:820px){.weeks-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:520px){.weeks-grid{grid-template-columns:1fr;} h1{font-size:1.4rem;}}
+</style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-top">
+      <span class="rocket" aria-hidden="true">🚀</span>
+      <div>
+        <h1>Laila's 6th Grade Rocket Launch</h1>
+        <p class="subtitle">A 28-day countdown to 6th grade · Florida B.E.S.T. Standards</p>
+      </div>
+      <button id="analyticsBtn" class="analytics-btn" aria-label="Open the parent analytics dashboard to review Laila's performance">📊 Parent Analytics</button>
+    </div>
+    <p class="welcome" id="welcomeMsg">Welcome back, Laila! Ready for today's mission?</p>
+
+    <div class="progress-wrap">
+      <div class="progress-labels">
+        <span id="progressLabel">Laila's Progress</span>
+        <span class="streak" id="streakLabel"></span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-label="Laila's overall 28-day challenge progress"
+           aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar">
+        <div class="progress-fill" id="progressFill">
+          <span class="progress-pct" id="progressPct" style="margin-right:10px;">0%</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="weeks-grid" id="weeksGrid"></div>
+  </main>
+
+  <footer>Built with 💜 for Laila · Tap any day to open your mission. Your progress saves automatically.</footer>
+
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-head">
+        <button class="modal-close" id="modalClose" aria-label="Close this day's mission">×</button>
+        <div class="m-day" id="modalDay">Day</div>
+        <h2 id="modalTitle">Title</h2>
+        <div class="m-stds" id="modalStds"></div>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer">
+        <span class="task-progress" id="taskProgress"></span>
+        <button class="btn secondary" id="resetDayBtn" aria-label="Reset this day so Laila can try again">Reset this day</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="statsOverlay" role="dialog" aria-modal="true" aria-labelledby="statsTitle">
+    <div class="modal">
+      <div class="modal-head">
+        <button class="modal-close" id="statsClose" aria-label="Close the analytics dashboard">×</button>
+        <div class="m-day">Parent Dashboard</div>
+        <h2 id="statsTitle">Laila's Learning Analytics</h2>
+        <div class="m-stds"><span class="std-chip">💜 For parents · updates live as Laila works</span></div>
+      </div>
+      <div class="modal-body" id="statsBody"></div>
+      <div class="modal-footer">
+        <span class="task-progress" id="statsSummary"></span>
+        <button class="btn secondary" id="resetStatsBtn" aria-label="Reset all analytics data">Reset analytics</button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+<script>
+/* Rendering helpers for schoolwork-accurate math */
+function frac(num, den){
+  return '<span class="frac"><span class="num">'+num+'</span><span class="den">'+den+'</span></span>';
+}
+function exp(base, power){ return base + '<sup>' + power + '</sup>'; }
+
+/* Florida B.E.S.T. standards table */
+const STANDARDS = [
+  {day:1, week:1, math:'MA.5.NSO.2.5', mathTitle:'Multi-Digit Multiplication', ela:'ELA.5.R.1.1', elaTitle:'Character & Plot Development'},
+  {day:2, week:1, math:'MA.5.NSO.2.3', mathTitle:'Adding & Subtracting Decimals', ela:'ELA.5.R.1.2', elaTitle:'Finding the Theme'},
+  {day:3, week:1, math:'MA.5.FR.2.1', mathTitle:'Adding Fractions (Unlike Denominators)', ela:'ELA.5.R.1.3', elaTitle:'Elements of Poetry'},
+  {day:4, week:1, math:'MA.5.FR.2.2', mathTitle:'Multiplying Fractions', ela:'ELA.5.R.1.4', elaTitle:'Figurative Language'},
+  {day:5, week:1, math:'MA.5.AR.2.3', mathTitle:'Solving for the Unknown', ela:'ELA.5.R.2.2', elaTitle:'Central Idea & Details'},
+  {day:6, week:1, math:'MA.5.GR.4.1', mathTitle:'Area & Perimeter', ela:'ELA.5.R.3.2', elaTitle:'Summarizing a Text'},
+  {day:7, week:1, review:true, title:'Weekly Review 1', sub:'5th Grade Mastery'},
+
+  {day:8, week:2, math:'MA.6.NSO.2.1', mathTitle:'Multiplying & Dividing Decimals', ela:'ELA.6.R.1.1', elaTitle:'Analyzing Plot & Character'},
+  {day:9, week:2, math:'MA.5.FR.2.4', mathTitle:'Dividing Unit Fractions', ela:'ELA.6.R.1.2', elaTitle:'Theme Development'},
+  {day:10, week:2, math:'MA.6.NSO.2.2', mathTitle:'Multi-Digit Division', ela:'ELA.6.R.2.3', elaTitle:"Author's Use of Evidence"},
+  {day:11, week:2, math:'MA.5.AR.3.1', mathTitle:'Number Patterns', ela:'ELA.6.R.2.4', elaTitle:'Tracing an Argument'},
+  {day:12, week:2, math:'MA.5.DP.1.1', mathTitle:'Representing Data', ela:'ELA.6.R.3.1', elaTitle:'Interpreting Figurative Language'},
+  {day:13, week:2, math:'MA.6.NSO.3.4', mathTitle:'Greatest Common Factor & LCM', ela:'ELA.6.V.1.2', elaTitle:'Greek & Latin Roots'},
+  {day:14, week:2, review:true, title:'Weekly Review 2', sub:'The 5th-to-6th Bridge'},
+
+  {day:15, week:3, math:'MA.6.NSO.1.2', mathTitle:'Comparing & Ordering Rational Numbers', ela:'ELA.6.R.2.1', elaTitle:'Central Idea'},
+  {day:16, week:3, math:'MA.6.NSO.1.1', mathTitle:'Positive & Negative Integers', ela:'ELA.6.R.2.4', elaTitle:'Argument & Evidence'},
+  {day:17, week:3, math:'MA.6.AR.3.1', mathTitle:'Understanding Ratios', ela:'ELA.6.V.1.3', elaTitle:'Words in Context'},
+  {day:18, week:3, math:'MA.6.AR.3.3', mathTitle:'Unit Rates', ela:'ELA.6.C.3.1', elaTitle:'Grammar & Conventions'},
+  {day:19, week:3, math:'MA.6.AR.3.2', mathTitle:'Equivalent Ratios & Rates', ela:'ELA.6.C.3.1', elaTitle:'Grammar & Conventions'},
+  {day:20, week:3, math:'MA.6.NSO.1.3', mathTitle:'Absolute Value', ela:'ELA.6.R.3.2', elaTitle:'Summarizing Central Idea'},
+  {day:21, week:3, review:true, title:'Weekly Review 3', sub:'Numbers & Ratios'},
+
+  {day:22, week:4, math:'MA.6.NSO.3.5', mathTitle:'Multiplying & Dividing Fractions', ela:'ELA.6.R.2.2', elaTitle:'Central Idea Development'},
+  {day:23, week:4, math:'MA.6.AR.1.1', mathTitle:'Writing Algebraic Expressions', ela:'ELA.6.R.2.3', elaTitle:'Evaluating Evidence'},
+  {day:24, week:4, math:'MA.6.AR.2.2', mathTitle:'Solving One-Step Equations', ela:'ELA.6.C.1.3', elaTitle:'Organized Writing'},
+  {day:25, week:4, math:'MA.6.GR.1.2', mathTitle:'Area of Polygons', ela:'ELA.6.C.1.3', elaTitle:'Organized Writing'},
+  {day:26, week:4, math:'MA.6.DP.1.2', mathTitle:'Mean, Median & Mode', ela:'ELA.6.C.3.1', elaTitle:'Grammar & Conventions'},
+  {day:27, week:4, math:'MA.6.DP.1.3', mathTitle:'Box Plots & Histograms', ela:'ELA.6.C.3.1', elaTitle:'Grammar & Conventions'},
+  {day:28, week:4, review:true, title:"Laila's 6th Grade Graduation Quiz", sub:'Comprehensive Final'}
+];
+
+/* Placeholder tasks for Days 8-28 */
+function templateMathTask(std){
+  const isFraction = /FR|Fraction/.test(std.math + ' ' + std.mathTitle);
+  let prompt, hint;
+  if(isFraction){
+    prompt = 'Sample problem: Laila combines ' + frac(1,4) + ' and ' + frac(2,4) +
+             '. What is the sum? <span class="placeholder-note">(question text to be added)</span>';
+    hint = ['Denominators match &rarr; keep the ' + frac('','4'),
+            'Add the numerators &rarr; 1 + 2 = 3',
+            'Answer &rarr; ' + frac(3,4)];
+  } else {
+    prompt = 'Sample problem for <b>' + std.mathTitle + '</b>. Example: Laila calculates ' + exp(4,2) +
+             ' + 5. <span class="placeholder-note">(question text to be added)</span>';
+    hint = ['Break it into one step at a time', exp(4,2) + ' &rarr; 4 &times; 4 = 16', '16 + 5 &rarr; 21'];
+  }
+  return {kind:'mc', tag:'math', placeholder:true, prompt:prompt,
+    choices:['Option A','Option B','Option C','Option D'], answer:0, hint:hint};
+}
+function templateElaTask(std){
+  return {kind:'passage', tag:'ela', placeholder:true,
+    passageTitle:'Reading Passage — ' + std.elaTitle,
+    passage:'A short 4–6 sentence reading passage for the standard <b>'+std.ela+'</b> will go here. '+
+            'It will feature an age-appropriate story or informational text for Laila. '+
+            'The passage stays brief so it fits neatly on an iPad screen. '+
+            '<span class="placeholder-note">(passage text to be added)</span>',
+    questions:[
+      {kind:'mc', prompt:'Comprehension question 1 for '+std.elaTitle+'. <span class="placeholder-note">(to be added)</span>',
+       choices:['Answer A','Answer B','Answer C'], answer:0, hint:['Look back at the passage for the answer.']},
+      {kind:'text', prompt:'Comprehension question 2 (short answer). <span class="placeholder-note">(to be added)</span>',
+       answers:['sample'], hint:['Reread the passage and use one clear word.']}
+    ]};
+}
+function templateReviewTask(std){
+  return [
+    {kind:'mc', tag:'math', placeholder:true,
+      prompt:'<b>'+ (std.title||'Weekly Review') +'</b> — mixed math review question. '+
+             'This review revisits the week\'s standards. <span class="placeholder-note">(to be added)</span>',
+      choices:['Option A','Option B','Option C','Option D'], answer:0,
+      hint:['Review this week\'s steps','Work one small step at a time']},
+    {kind:'passage', tag:'ela', placeholder:true,
+      passageTitle:'Review Reading Passage',
+      passage:'A short review passage revisiting the week\'s reading skills will go here. '+
+              '<span class="placeholder-note">(passage text to be added)</span>',
+      questions:[
+        {kind:'mc', prompt:'Review comprehension question. <span class="placeholder-note">(to be added)</span>',
+         choices:['Answer A','Answer B','Answer C'], answer:0, hint:['Look back at the passage.']}
+      ]}
+  ];
+}
+
+/* ===================== AUTHORED CONTENT: Days 1-7 ===================== */
+
+/* Day 1 — MA.5.NSO.2.5 (multi-digit multiplication) & ELA.5.R.1.1 (character & plot) */
+const DAY1_TASKS = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila is building a rocket wall and packs <b>24</b> boxes with <b>36</b> foam tiles in each box. How many foam tiles does she have in all?',
+    choices:['720 tiles','864 tiles','816 tiles','948 tiles'], answer:1,
+    hint:[ '24 &times; 6 &rarr; 144', '24 &times; 30 &rarr; 720', '144 + 720 &rarr; 864' ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila\'s model rocket climbs <b>125</b> meters every second. How many meters does it climb in <b>48</b> seconds? (Type just the number.)',
+    answers:['6000','6,000'],
+    hint:[ '125 &times; 8 &rarr; 1000', '125 &times; 40 &rarr; 5000', '1000 + 5000 &rarr; 6000' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The Diving Board',
+    passage:'Maya gripped the edge of the diving board, her toes curling over the rough surface. '+
+            'Below, the pool shimmered a bright, inviting blue, but her legs felt frozen in place. '+
+            'Her little brother Theo called up from the water, &ldquo;You can do it &mdash; I\'ll count for you!&rdquo; '+
+            'As he shouted &ldquo;Three... two... one!&rdquo; Maya took a deep breath and leaped off the board. '+
+            'When she surfaced, laughing and gasping, she realized the jump had been far less scary than the waiting.',
+    questions:[
+      { kind:'mc', prompt:'What finally helps Maya jump off the board?',
+        choices:['The water looks warm','Her brother Theo counts down and cheers her on','The lifeguard blows a whistle','She gets tired of standing'],
+        answer:1, hint:['Find the moment right before she jumps','Theo shouts &ldquo;Three... two... one!&rdquo; &rarr; that push helps her leap'] },
+      { kind:'text', prompt:'After Maya surfaces, how does she feel about the jump? Answer in one or two words.',
+        answers:['relieved','happy','proud','less scared','not scared','brave','glad'],
+        hint:['Look at the last sentence','It felt &ldquo;less scary than the waiting&rdquo; &rarr; she feels relieved / happy'] }
+    ] }
+];
+
+/* Day 2 — MA.5.NSO.2.3 (add/subtract decimals) & ELA.5.R.1.2 (theme) */
+const DAY2_TASKS = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila buys purple paint for <b>$12.75</b> and a set of brushes for <b>$8.60</b>. How much does she spend in all?',
+    choices:['$20.35','$21.35','$21.45','$20.45'], answer:1,
+    hint:[ 'Line up the decimal points', 'Hundredths &rarr; 5 + 0 = 5', 'Tenths &rarr; 7 + 6 = 13, write 3 carry 1', 'Dollars &rarr; 1 + 2 + 8 + 1 = 12 &rarr; $21.35' ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila\'s rocket kit weighs <b>45.6</b> grams. She removes a <b>18.9</b> gram nose cone. How many grams are left? (Type just the number.)',
+    answers:['26.7','26.7g','26.7 grams'],
+    hint:[ 'Line up the decimals: 45.6 &minus; 18.9', 'Tenths &rarr; 6 &minus; 9, borrow &rarr; 16 &minus; 9 = 7', 'Ones &rarr; 4 &minus; 8, borrow &rarr; 14 &minus; 8 = 6', 'Tens &rarr; 3 &minus; 1 = 2 &rarr; 26.7' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'Free Throws',
+    passage:'Every morning before school, Diego practiced free throws in his cold garage. '+
+            'His hands ached and the ball clanged off the rim more often than it dropped through. '+
+            'His older sister teased that he would never make the team, but Diego just kept shooting. '+
+            'Weeks passed, and slowly the loud clangs turned into soft swishes. '+
+            'When tryout day finally came, Diego sank shot after shot, and the coach smiled and wrote down his name.',
+    questions:[
+      { kind:'mc', prompt:'What is the main <b>theme</b>, or message, of this story?',
+        choices:['Basketball is easy for everyone','Hard work and practice pay off','Older sisters are always right','It is best to give up when things are hard'],
+        answer:1, hint:['A theme is the big lesson','Diego practices daily &rarr; clangs become swishes &rarr; he makes the team'] },
+      { kind:'text', prompt:'Choose one word that best describes Diego. Answer in one word.',
+        answers:['determined','persistent','hardworking','dedicated','patient','committed','focused'],
+        hint:['Think about how he keeps practicing','He never quits &rarr; he is determined / persistent'] }
+    ] }
+];
+
+/* Day 3 — MA.5.FR.2.1 (add/subtract fractions, unlike denominators) & ELA.5.R.1.3 (elements of poetry) */
+const DAY3_TASKS = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila paints '+frac(1,3)+' of her rocket poster in the morning and '+frac(1,4)+' of it in the afternoon. '+
+           'What fraction of the poster has she painted in all?',
+    choices:[frac(2,7),frac(7,12),frac(2,12),frac(1,7)], answer:1,
+    hint:[ 'Find a common denominator &rarr; 12',
+           frac(1,3)+' &rarr; '+frac(4,12),
+           frac(1,4)+' &rarr; '+frac(3,12),
+           'Add numerators &rarr; 4 + 3 = 7 &rarr; '+frac(7,12) ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila has '+frac(5,6)+' of a sticker sheet and uses '+frac(1,2)+' of a full sheet on her rocket. '+
+           'How much of the sheet is left? (Type your answer as a fraction, like 1/3.)',
+    answers:['1/3','2/6'],
+    hint:[ 'Common denominator &rarr; 6',
+           frac(1,2)+' &rarr; '+frac(3,6),
+           'Subtract &rarr; 5 &minus; 3 = 2 &rarr; '+frac(2,6),
+           'Simplify &rarr; '+frac(2,6)+' = '+frac(1,3) ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'Poem: "Laila\'s Rocket"',
+    passage:'The rocket rests in morning light,<br>'+
+            'Its silver nose points toward the blue.<br>'+
+            'By evening it will take to flight,<br>'+
+            'And paint the sleepy stars a brighter hue.',
+    questions:[
+      { kind:'mc', prompt:'Which pair of words at the ends of the lines <b>rhyme</b>?',
+        choices:['light and blue','rocket and star','light and flight','nose and blue'],
+        answer:2, hint:['Say the last word of each line out loud','&ldquo;light&rdquo; and &ldquo;flight&rdquo; &rarr; both end in the &minus;ight sound'] },
+      { kind:'text', prompt:'A group of lines that go together in a poem, like these four lines, is called a ___. (One word.)',
+        answers:['stanza','a stanza','verse'],
+        hint:['These 4 lines form one section of the poem','A section of a poem is called a stanza'] }
+    ] }
+];
+
+/* Day 4 — MA.5.FR.2.2 (multiplying fractions) & ELA.5.R.1.4 (figurative language) */
+const DAY4_TASKS = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila uses '+frac(1,2)+' of a '+frac(3,4)+'-cup scoop of purple glitter on her rocket. '+
+           'How many cups of glitter does she use?',
+    choices:[frac(4,6),frac(3,8),frac(3,6),frac(1,2)], answer:1,
+    hint:[ 'To multiply fractions, multiply straight across',
+           'Numerators &rarr; 1 &times; 3 = 3',
+           'Denominators &rarr; 2 &times; 4 = 8',
+           'Answer &rarr; '+frac(3,8) ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila fills '+frac(2,3)+' of a jar, then pours out '+frac(3,4)+' of what is inside. '+
+           'What fraction of the whole jar did she pour out? (Type as a fraction, like 1/2.)',
+    answers:['1/2','6/12'],
+    hint:[ 'Multiply straight across &rarr; '+frac(2,3)+' &times; '+frac(3,4),
+           'Numerators &rarr; 2 &times; 3 = 6',
+           'Denominators &rarr; 3 &times; 4 = 12',
+           'Simplify &rarr; '+frac(6,12)+' = '+frac(1,2) ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The Old Oak Tree',
+    passage:'The old oak tree in Laila\'s backyard was a giant green umbrella, shading the whole garden. '+
+            'Its leaves whispered soft secrets whenever the wind rushed by. '+
+            'On hot afternoons, the grass beneath it felt as cool as a swimming pool. '+
+            'Laila loved to read there for hours while the branches danced gently above her head.',
+    questions:[
+      { kind:'mc', prompt:'&ldquo;Its leaves whispered soft secrets&rdquo; gives the tree a human action. This is an example of:',
+        choices:['a simile','personification','a rhyme','a fact'],
+        answer:1, hint:['Leaves cannot really whisper — that is a human thing to do','Giving human actions to objects &rarr; personification'] },
+      { kind:'text', prompt:'&ldquo;As cool as a swimming pool&rdquo; compares two things using the word &ldquo;as.&rdquo; What kind of figurative language is this? (One word.)',
+        answers:['simile','a simile'],
+        hint:['It compares the grass to a pool using &ldquo;as ... as&rdquo;','A comparison using &ldquo;like&rdquo; or &ldquo;as&rdquo; &rarr; a simile'] }
+    ] }
+];
+
+/* Day 5 — MA.5.AR.2.3 (determine unknown in an equation) & ELA.5.R.2.2 (central idea & details) */
+const DAY5_TASKS = [
+  { kind:'text', tag:'math',
+    prompt:'Laila writes the equation <b>6 &times; ? = 54</b> for her rocket club. '+
+           'What number belongs in the box? (Type just the number.)',
+    answers:['9'],
+    hint:[ 'Ask: 6 times what equals 54?',
+           'Use the opposite operation &rarr; 54 &divide; 6',
+           '54 &divide; 6 &rarr; 9' ] },
+  { kind:'mc', tag:'math',
+    prompt:'Laila needs to solve <b>? &divide; 4 = 12</b> to share her stickers evenly. '+
+           'What is the missing number?',
+    choices:['3','16','48','8'], answer:2,
+    hint:[ 'Ask: what number divided by 4 gives 12?',
+           'Use the opposite operation &rarr; 12 &times; 4',
+           '12 &times; 4 &rarr; 48' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The Clever Octopus',
+    passage:'Octopuses are some of the smartest animals in the entire ocean. '+
+            'They can open jars, solve tricky puzzles, and even recognize different people who visit them. '+
+            'Each of their eight arms can taste and touch at the very same time. '+
+            'Some octopuses can squeeze their whole body through a gap no bigger than a coin. '+
+            'Scientists believe these clever creatures are always discovering new ways to explore their watery world.',
+    questions:[
+      { kind:'mc', prompt:'What is the <b>central idea</b> of this passage?',
+        choices:['Octopuses live in the ocean','Octopuses are very intelligent ocean animals','Octopuses have eight arms','Jars are hard to open'],
+        answer:1, hint:['The central idea is what the whole passage is mostly about','Every detail shows how smart octopuses are &rarr; they are intelligent'] },
+      { kind:'text', prompt:'According to the passage, how many arms does an octopus have? (You may type the number or the word.)',
+        answers:['8','eight'],
+        hint:['Look for the sentence about the arms','&ldquo;Each of their eight arms&rdquo; &rarr; 8'] }
+    ] }
+];
+
+/* Day 6 — MA.5.GR.4.1 (area & perimeter) & ELA.5.R.3.2 (summarizing) */
+const DAY6_TASKS = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila\'s rectangular rocket poster is <b>8 inches</b> long and <b>5 inches</b> wide. '+
+           'What is the <b>area</b> of the poster?',
+    choices:['13 square inches','26 square inches','40 square inches','45 square inches'], answer:2,
+    hint:[ 'Area of a rectangle &rarr; length &times; width',
+           '8 &times; 5 &rarr; 40',
+           'Answer &rarr; 40 square inches' ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila builds a rectangular garden bed that is <b>12 feet</b> long and <b>4 feet</b> wide. '+
+           'What is the <b>perimeter</b> (the distance all the way around)? (Type just the number.)',
+    answers:['32','32 ft','32 feet'],
+    hint:[ 'Perimeter &rarr; add all four sides',
+           'Length + width &rarr; 12 + 4 = 16',
+           'Two lengths and two widths &rarr; 16 &times; 2',
+           '16 &times; 2 &rarr; 32 feet' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The Storm Kitten',
+    passage:'During a loud thunderstorm, Laila found a tiny kitten shivering under her front porch. '+
+            'She gently wrapped it in a warm towel and gave it a small bowl of milk. '+
+            'For the next few days, she made bright posters and asked all of her neighbors if anyone had lost a pet. '+
+            'Finally, a little boy from down the street recognized his missing kitten. '+
+            'Laila was a little sad to say goodbye, but she felt happy that the kitten was safely home again.',
+    questions:[
+      { kind:'mc', prompt:'Which sentence is the <b>best summary</b> of the whole story?',
+        choices:['Laila does not like storms','Laila finds a lost kitten, cares for it, and helps return it to its owner','A little boy loses his pet','Kittens like warm towels'],
+        answer:1, hint:['A summary retells only the most important events in order','Found kitten &rarr; cared for it &rarr; returned it home'] },
+      { kind:'text', prompt:'Which word best describes how Laila acts in this story? (One word.)',
+        answers:['kind','caring','helpful','thoughtful','generous','nice','responsible'],
+        hint:['Think about what she does for the kitten and the boy','She helps and cares for others &rarr; she is kind / caring'] }
+    ] }
+];
+
+/* Day 7 — Weekly Review 1 (mixed 5th-grade mastery) */
+const DAY7_TASKS = [
+  { kind:'mc', tag:'math',
+    prompt:'<b>Review — Fractions:</b> Laila reads '+frac(1,4)+' of her book on Monday and '+frac(3,8)+' on Tuesday. '+
+           'What fraction of the book has she read in all?',
+    choices:[frac(4,12),frac(5,8),frac(4,8),frac(1,2)], answer:1,
+    hint:[ 'Common denominator &rarr; 8',
+           frac(1,4)+' &rarr; '+frac(2,8),
+           'Add numerators &rarr; 2 + 3 = 5 &rarr; '+frac(5,8) ] },
+  { kind:'text', tag:'math',
+    prompt:'<b>Review — Decimals:</b> Laila pays for a $13.45 rocket kit with a $20.00 bill. '+
+           'How much change should she get back? (Type just the number.)',
+    answers:['6.55','$6.55','6.55 dollars'],
+    hint:[ 'Line up the decimals &rarr; 20.00 &minus; 13.45',
+           'Hundredths &rarr; 0 &minus; 5, borrow &rarr; 10 &minus; 5 = 5',
+           'Tenths &rarr; 9 &minus; 4 = 5',
+           'Dollars &rarr; 19 &minus; 13 = 6 &rarr; $6.55' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The Science Fair',
+    passage:'Laila entered the school science fair with a homemade erupting volcano. '+
+            'The night before, her display suddenly fell apart, and she almost decided to give up. '+
+            'Instead, she stayed calm, rebuilt it piece by piece, and even added a neat new label. '+
+            'The next morning, the judges loved how clearly she explained her project. '+
+            'Laila did not win first place, but she felt proud that she never quit.',
+    questions:[
+      { kind:'mc', prompt:'What is the <b>theme</b>, or lesson, of this story?',
+        choices:['Volcanoes are dangerous','Never giving up can make you proud','Science fairs are boring','Always win first place'],
+        answer:1, hint:['A theme is the big lesson the story teaches','Her display broke &rarr; she rebuilt it &rarr; she felt proud she never quit'] },
+      { kind:'text', prompt:'Choose one word that best describes Laila in this story. (One word.)',
+        answers:['determined','persistent','proud','brave','calm','hardworking','resilient'],
+        hint:['Think about how she reacts when things go wrong','She stays calm and keeps going &rarr; she is determined / persistent'] }
+    ] }
+];
+
+const AUTHORED = {1:DAY1_TASKS, 2:DAY2_TASKS, 3:DAY3_TASKS, 4:DAY4_TASKS, 5:DAY5_TASKS, 6:DAY6_TASKS, 7:DAY7_TASKS};
+
+/* ===================== Assemble curriculum ===================== */
+function buildDay(std){
+  let tasks;
+  if(AUTHORED[std.day]) tasks = AUTHORED[std.day];
+  else if(std.review) tasks = templateReviewTask(std);
+  else tasks = [ templateMathTask(std), templateElaTask(std) ];
+  return { day:std.day, week:std.week, review:!!std.review,
+    title: std.title || (std.mathTitle + ' & ' + std.elaTitle),
+    mathStd:std.math, elaStd:std.ela, sub:std.sub, tasks:tasks };
+}
+const CURRICULUM = STANDARDS.map(buildDay);
+
+/* Readable title lookup for each B.E.S.T. standard code (for analytics) */
+const STD_TITLE = {};
+STANDARDS.forEach(s => { if(s.math) STD_TITLE[s.math] = s.mathTitle; if(s.ela) STD_TITLE[s.ela] = s.elaTitle; });
+
+function countQuestions(day){
+  let n = 0;
+  day.tasks.forEach(t => { n += (t.kind === 'passage') ? t.questions.length : 1; });
+  return n;
+}
+
+/* State + localStorage */
+const STORAGE_KEY = 'laila_rocket_launch_v1';
+let state = loadState();
+if(!state.qlog) state.qlog = {};
+function loadState(){
+  try{ const raw = localStorage.getItem(STORAGE_KEY); if(raw) return JSON.parse(raw); }catch(e){}
+  return { completed:{}, answered:{}, qlog:{} };
+}
+function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+function dayCorrectSet(day){ if(!state.answered[day]) state.answered[day] = []; return new Set(state.answered[day]); }
+
+/* Board */
+const WEEK_NAMES = {1:'Week 1',2:'Week 2',3:'Week 3',4:'Week 4'};
+const WEEK_SUBS  = {1:'5th Grade Mastery',2:'The 5th→6th Bridge',3:'Numbers & Ratios',4:'Expressions & Stats'};
+
+function renderBoard(){
+  const grid = document.getElementById('weeksGrid');
+  grid.innerHTML = '';
+  for(let w=1; w<=4; w++){
+    const col = document.createElement('section');
+    col.className = 'week-col';
+    col.setAttribute('aria-label', WEEK_NAMES[w] + ', ' + WEEK_SUBS[w]);
+    col.innerHTML = '<div class="week-title">'+WEEK_NAMES[w]+'<small>'+WEEK_SUBS[w]+'</small></div>';
+    CURRICULUM.filter(d => d.week === w).forEach(d => col.appendChild(makeCard(d)));
+    grid.appendChild(col);
+  }
+  updateProgress();
+}
+
+function makeCard(d){
+  const card = document.createElement('div');
+  card.className = 'day-card' + (d.review ? ' review' : '') + (state.completed[d.day] ? ' done' : '');
+  card.tabIndex = 0;
+  card.setAttribute('role','button');
+  card.setAttribute('aria-label',
+    'Day '+d.day+', '+d.title + (d.review?'':', standards '+d.mathStd+' and '+d.elaStd) +
+    (state.completed[d.day] ? ', completed' : ', not yet completed') + '. Tap to open.');
+  const stdLine = d.review ? (d.sub||'Review day') : (d.mathStd + ' · ' + d.elaStd);
+  card.innerHTML =
+    '<span class="check-badge" aria-hidden="true">✓</span>'+
+    '<div class="day-num">Day '+d.day+'</div>'+
+    '<div class="day-name">'+d.title+'</div>'+
+    '<div class="day-std">'+stdLine+'</div>';
+  card.addEventListener('click', () => openDay(d.day));
+  card.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openDay(d.day); }});
+  return card;
+}
+
+function updateProgress(){
+  const done = Object.keys(state.completed).filter(k=>state.completed[k]).length;
+  const pct = Math.round((done/28)*100);
+  const fill = document.getElementById('progressFill');
+  fill.style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+  const bar = document.getElementById('progressBar');
+  bar.setAttribute('aria-valuenow', pct);
+  bar.setAttribute('aria-label', 'Laila has completed '+done+' of 28 days, '+pct+' percent');
+  document.getElementById('progressLabel').textContent = "Laila's Progress — "+done+' of 28 days';
+  document.getElementById('streakLabel').textContent = done>0 ? ('🌟 '+done+' mission'+(done>1?'s':'')+' complete!') : 'Let\'s launch! 🚀';
+}
+
+/* Modal + questions */
+let activeDay = null;
+
+function openDay(dayNum){
+  const d = CURRICULUM.find(x => x.day === dayNum);
+  activeDay = d;
+  document.getElementById('modalDay').textContent = 'Day ' + d.day + (d.review?' · Review':'');
+  document.getElementById('modalTitle').textContent = d.title;
+  const stds = document.getElementById('modalStds');
+  stds.innerHTML = d.review
+    ? '<span class="std-chip">🎯 '+(d.sub||'Weekly Review')+'</span>'
+    : '<span class="std-chip">📐 '+d.mathStd+'</span><span class="std-chip">📖 '+d.elaStd+'</span>';
+  renderTasks(d);
+  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('modalClose').focus();
+}
+
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); activeDay = null; }
+
+function renderTasks(d){
+  const body = document.getElementById('modalBody');
+  const correct = dayCorrectSet(d.day);
+  let html = '<div class="day-complete-banner" id="dayBanner">🎉 Amazing work, Laila! You finished Day '+d.day+'! 🚀</div>';
+  let qIndex = 0;
+
+  d.tasks.forEach(t => {
+    const ph = t.placeholder ? ' placeholder' : '';
+    if(t.kind === 'passage'){
+      html += '<div class="task'+ph+'">';
+      html += '<span class="task-tag tag-ela">📖 Reading</span>';
+      html += '<div class="ela-wrap">';
+      html += '<div class="passage"><h4>'+t.passageTitle+'</h4><p>'+t.passage+'</p></div>';
+      html += '<div class="ela-questions">';
+      t.questions.forEach(q => { html += renderQuestion(q, qIndex, correct.has(qIndex)); qIndex++; });
+      html += '</div></div></div>';
+    } else {
+      html += '<div class="task'+ph+'">';
+      html += '<span class="task-tag tag-'+(t.tag||'math')+'">'+(t.tag==='ela'?'📖 Reading':'📐 Math')+'</span>';
+      html += renderQuestion(t, qIndex, correct.has(qIndex));
+      qIndex++;
+      html += '</div>';
+    }
+  });
+  body.innerHTML = html;
+
+  body.querySelectorAll('[data-check]').forEach(btn => {
+    btn.addEventListener('click', () => checkAnswer(d, parseInt(btn.getAttribute('data-check'))));
+  });
+  updateTaskProgress(d);
+  maybeShowBanner(d);
+}
+
+function renderQuestion(q, idx, alreadyCorrect){
+  let h = '<div class="question" data-q="'+idx+'">';
+  h += '<p class="q-prompt">'+q.prompt+'</p>';
+  if(q.kind === 'mc'){
+    h += '<div class="choices" role="radiogroup" aria-label="Answer choices for question '+(idx+1)+'">';
+    q.choices.forEach((c,ci) => {
+      h += '<label class="choice"><input type="radio" name="q'+idx+'" value="'+ci+'" aria-label="'+stripTags(c)+'"><span>'+c+'</span></label>';
+    });
+    h += '</div>';
+  } else {
+    h += '<input class="text-input" type="text" id="input'+idx+'" aria-label="Type your answer for question '+(idx+1)+'" placeholder="Type your answer here..." autocomplete="off">';
+  }
+  h += '<button class="btn" data-check="'+idx+'" aria-label="Check Laila\'s answer for question '+(idx+1)+'">Check Answer</button>';
+  h += '<div class="feedback" id="fb'+idx+'" role="status" aria-live="polite"></div>';
+  h += '</div>';
+  return h;
+}
+
+function stripTags(s){ return s.replace(/<[^>]*>/g,'').replace(/"/g,'&quot;'); }
+
+function questionByIndex(d, idx){
+  let i = 0;
+  for(const t of d.tasks){
+    if(t.kind === 'passage'){ for(const q of t.questions){ if(i===idx) return q; i++; } }
+    else { if(i===idx) return t; i++; }
+  }
+  return null;
+}
+
+/* Determine the subject, B.E.S.T. standard, and readable topic for a question (for analytics) */
+function questionMeta(d, idx){
+  let i = 0;
+  for(const t of d.tasks){
+    const count = (t.kind === 'passage') ? t.questions.length : 1;
+    if(idx < i + count){
+      const tag = t.tag || (t.kind === 'passage' ? 'ela' : 'math');
+      if(tag === 'math')
+        return { subject:'Math', standard:d.mathStd || ('Day '+d.day+' Review'), title: STD_TITLE[d.mathStd] || (d.review ? 'Weekly Review (Math)' : 'Math') };
+      return { subject:'Reading', standard:d.elaStd || ('Day '+d.day+' Review'), title: STD_TITLE[d.elaStd] || (d.review ? 'Weekly Review (Reading)' : 'Reading') };
+    }
+    i += count;
+  }
+  return { subject:'Math', standard:'?', title:'?' };
+}
+
+/* Record an answer attempt. Stops logging a question once solved so counts stay meaningful. */
+function logAttempt(d, idx, correct){
+  if(!state.qlog) state.qlog = {};
+  const key = d.day + '-' + idx;
+  let rec = state.qlog[key];
+  if(!rec){ const m = questionMeta(d, idx); rec = { subject:m.subject, standard:m.standard, title:m.title, day:d.day, attempts:0, wrong:0, solved:false, firstTry:false }; state.qlog[key] = rec; }
+  if(rec.solved) return;
+  rec.attempts++;
+  if(correct){ rec.solved = true; rec.firstTry = (rec.attempts === 1); }
+  else { rec.wrong++; }
+  saveState();
+}
+
+function normalize(s){ return String(s).trim().toLowerCase().replace(/[.,!?;:'"]+$/,'').replace(/\s+/g,' '); }
+
+function checkAnswer(d, idx){
+  const q = questionByIndex(d, idx);
+  const fb = document.getElementById('fb'+idx);
+  let isCorrect = false;
+
+  if(q.kind === 'mc'){
+    const sel = document.querySelector('input[name="q'+idx+'"]:checked');
+    if(!sel){ showFeedback(fb, null, q, 'Pick an answer first, Laila! 💜'); return; }
+    isCorrect = (parseInt(sel.value) === q.answer);
+    document.querySelectorAll('input[name="q'+idx+'"]').forEach((inp) => {
+      const lab = inp.closest('.choice');
+      lab.classList.remove('correct','wrong');
+      if(parseInt(inp.value) === q.answer) lab.classList.add('correct');
+      else if(inp.checked) lab.classList.add('wrong');
+    });
+  } else {
+    const inp = document.getElementById('input'+idx);
+    const val = normalize(inp.value);
+    if(!val){ showFeedback(fb, null, q, 'Type your answer first, Laila! 💜'); return; }
+    isCorrect = q.answers.some(a => normalize(a) === val);
+    inp.style.borderColor = isCorrect ? 'var(--good)' : 'var(--bad)';
+  }
+
+  logAttempt(d, idx, isCorrect);
+
+  if(isCorrect){
+    const set = dayCorrectSet(d.day);
+    set.add(idx);
+    state.answered[d.day] = Array.from(set);
+    saveState();
+    showFeedback(fb, true, q, q.placeholder ? 'Correct! (This is a sample question.) 🌟' : 'Correct, Laila! Great job! 🌟');
+    updateTaskProgress(d);
+    checkDayCompletion(d);
+  } else {
+    showFeedback(fb, false, q);
+  }
+}
+
+function showFeedback(fb, ok, q, customMsg){
+  fb.className = 'feedback show ' + (ok===true?'ok':'no');
+  if(ok === true){
+    fb.innerHTML = '<div class="fb-title">✅ '+(customMsg||'Correct!')+'</div>';
+  } else if(ok === false){
+    let steps = '<div class="fb-title">💡 Not quite — here\'s how it works:</div><div class="hint-steps">';
+    (q.hint||['Try again, Laila!']).forEach((s,i) => {
+      steps += '<div class="hint-step"><span class="num">'+(i+1)+'</span><span>'+s+'</span></div>';
+    });
+    steps += '</div>';
+    fb.innerHTML = steps;
+  } else {
+    fb.innerHTML = '<div class="fb-title">👉 '+customMsg+'</div>';
+  }
+}
+
+function updateTaskProgress(d){
+  const total = countQuestions(d);
+  const done = dayCorrectSet(d.day).size;
+  document.getElementById('taskProgress').textContent = 'Questions correct: '+done+' / '+total;
+}
+
+function maybeShowBanner(d){
+  const total = countQuestions(d);
+  const done = dayCorrectSet(d.day).size;
+  const banner = document.getElementById('dayBanner');
+  if(banner && done >= total && total > 0) banner.classList.add('show');
+}
+
+function checkDayCompletion(d){
+  const total = countQuestions(d);
+  const done = dayCorrectSet(d.day).size;
+  if(done >= total && total > 0){
+    const banner = document.getElementById('dayBanner');
+    if(banner) banner.classList.add('show');
+    if(!state.completed[d.day]){
+      state.completed[d.day] = true;
+      saveState();
+      launchConfetti();
+      renderBoard();
+    }
+  }
+}
+
+document.getElementById('resetDayBtn').addEventListener('click', () => {
+  if(!activeDay) return;
+  state.answered[activeDay.day] = [];
+  state.completed[activeDay.day] = false;
+  Object.keys(state.qlog||{}).forEach(k => { if(k.indexOf(activeDay.day + '-') === 0) delete state.qlog[k]; });
+  saveState();
+  renderTasks(activeDay);
+  renderBoard();
+});
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', e => { if(e.target.id === 'modalOverlay') closeModal(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+
+/* Confetti — purple & white burst */
+function launchConfetti(){
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  canvas.style.display = 'block';
+  const colors = ['#7c3aed','#8b5cf6','#a78bfa','#c4b5fd','#ffffff','#6d28d9'];
+  const pieces = [];
+  const cx = window.innerWidth/2, cy = window.innerHeight/2.4;
+  for(let i=0;i<140;i++){
+    const angle = Math.random()*Math.PI*2, speed = 4 + Math.random()*8;
+    pieces.push({ x:cx, y:cy, vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed - 4,
+      size:6+Math.random()*8, color:colors[(Math.random()*colors.length)|0], rot:Math.random()*6.28, vr:(Math.random()-.5)*.4 });
+  }
+  let frame = 0;
+  function tick(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    frame++;
+    let alive = false;
+    pieces.forEach(p => {
+      p.vy += 0.22; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      if(p.y < canvas.height + 20) alive = true;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.globalAlpha = Math.max(0, 1 - frame/120);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
+      ctx.restore();
+    });
+    if(alive && frame < 120){ requestAnimationFrame(tick); }
+    else { canvas.style.display='none'; ctx.clearRect(0,0,canvas.width,canvas.height); }
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ===================== Parent Analytics dashboard ===================== */
+function pct(n,d){ return d ? Math.round(n/d*100) : 0; }
+
+function renderAnalytics(){
+  const recs = Object.values(state.qlog || {});
+  const body = document.getElementById('statsBody');
+  const summary = document.getElementById('statsSummary');
+  const daysDone = Object.keys(state.completed).filter(k=>state.completed[k]).length;
+
+  if(recs.length === 0){
+    body.innerHTML = '<p style="text-align:center;color:var(--muted);padding:30px 12px;line-height:1.6;">No activity to review yet.<br>Once Laila answers some questions, her results, first-try accuracy, and the topics she struggles with will appear here. 💜</p>';
+    summary.textContent = '';
+    return;
+  }
+
+  const total = recs.length;
+  const solved = recs.filter(r=>r.solved).length;
+  const firstTry = recs.filter(r=>r.firstTry).length;
+  const totalWrong = recs.reduce((a,r)=>a + r.wrong, 0);
+  const ftRate = pct(firstTry, solved);
+
+  const subj = {};
+  recs.forEach(r=>{ const s = (subj[r.subject] = subj[r.subject] || {att:0,solved:0,first:0,wrong:0}); s.att++; if(r.solved)s.solved++; if(r.firstTry)s.first++; s.wrong += r.wrong; });
+
+  const topic = {};
+  recs.forEach(r=>{ const t = (topic[r.standard] = topic[r.standard] || {title:r.title,standard:r.standard,subject:r.subject,att:0,first:0,wrong:0,solved:0}); t.att++; if(r.firstTry)t.first++; if(r.solved)t.solved++; t.wrong += r.wrong; });
+  const topics = Object.values(topic);
+  const struggles = topics.filter(t=> t.wrong>0 || t.first<t.att).sort((a,b)=> (b.wrong - a.wrong) || (a.first/a.att - b.first/b.att));
+  const strong = topics.filter(t=> t.wrong===0 && t.first===t.att && t.solved>0);
+
+  let h = '<div class="stat-cards">';
+  h += '<div class="stat-card"><div class="big">'+solved+'/'+total+'</div><div class="lbl">Questions solved</div></div>';
+  h += '<div class="stat-card"><div class="big">'+ftRate+'%</div><div class="lbl">First-try accuracy</div></div>';
+  h += '<div class="stat-card"><div class="big">'+totalWrong+'</div><div class="lbl">Total retries</div></div>';
+  h += '<div class="stat-card"><div class="big">'+daysDone+'/28</div><div class="lbl">Days completed</div></div>';
+  h += '</div>';
+
+  h += '<div class="stats-section"><h3>By subject</h3>';
+  ['Math','Reading'].forEach(sn=>{ const s = subj[sn]; if(!s) return;
+    const r = pct(s.first, s.solved);
+    h += '<div class="topic-row"><div><div class="t-name">'+(sn==='Math'?'📐 ':'📖 ')+sn+'</div>'+
+         '<div class="t-std">'+s.solved+' solved · '+s.wrong+' retr'+(s.wrong===1?'y':'ies')+'</div>'+
+         '<div class="bar-mini"><div style="width:'+r+'%"></div></div></div>'+
+         '<span class="t-badge '+(r>=80?'badge-good':'badge-wrong')+'">'+r+'% first try</span></div>';
+  });
+  h += '</div>';
+
+  h += '<div class="stats-section"><h3>Areas to review</h3>';
+  if(struggles.length){
+    struggles.forEach(t=>{
+      h += '<div class="topic-row"><div><div class="t-name">'+t.title+'</div>'+
+           '<div class="t-std">'+t.standard+' · '+t.subject+'</div></div>'+
+           '<span class="t-badge badge-wrong">'+t.wrong+' retr'+(t.wrong===1?'y':'ies')+' · '+t.first+'/'+t.att+' first try</span></div>';
+    });
+  } else {
+    h += '<p style="color:var(--muted);font-size:.9rem;">Laila has solved everything on the first try so far — no trouble spots yet! 🎉</p>';
+  }
+  h += '</div>';
+
+  if(strong.length){
+    h += '<div class="stats-section"><h3>Strong areas 💪</h3>';
+    strong.forEach(t=>{
+      h += '<div class="topic-row"><div><div class="t-name">'+t.title+'</div>'+
+           '<div class="t-std">'+t.standard+' · '+t.subject+'</div></div>'+
+           '<span class="t-badge badge-good">All first try ✓</span></div>';
+    });
+    h += '</div>';
+  }
+
+  body.innerHTML = h;
+  summary.textContent = 'Overall first-try accuracy: '+ftRate+'% ('+firstTry+' of '+solved+' solved)';
+}
+
+function openStats(){ renderAnalytics(); document.getElementById('statsOverlay').classList.add('open'); }
+function closeStats(){ document.getElementById('statsOverlay').classList.remove('open'); }
+
+document.getElementById('analyticsBtn').addEventListener('click', openStats);
+document.getElementById('statsClose').addEventListener('click', closeStats);
+document.getElementById('statsOverlay').addEventListener('click', e => { if(e.target.id === 'statsOverlay') closeStats(); });
+document.getElementById('resetStatsBtn').addEventListener('click', () => { state.qlog = {}; saveState(); renderAnalytics(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeStats(); });
+
+renderBoard();
+</script>
+</body>
+</html>
