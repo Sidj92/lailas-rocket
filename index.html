@@ -85,6 +85,10 @@
   .week-header[aria-expanded="true"] .week-chevron{transform:rotate(90deg);}
   .week-body{padding:0 14px 14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
   .week-body[hidden]{display:none;}
+  .week-header.locked{cursor:default;}
+  .week-header.locked .wh-name{color:var(--muted);}
+  .week-lock{font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap;flex-shrink:0;}
+  .week-locked-note{grid-column:1 / -1;display:flex;align-items:center;gap:8px;padding:10px 6px;color:var(--muted);font-size:.9rem;}
 
   .day-card{
     background:var(--lavender-card);border:2px solid var(--lavender-2);border-radius:12px;
@@ -161,8 +165,10 @@
 
   .text-input{
     width:100%;padding:11px 13px;border:2px solid var(--lavender-2);border-radius:10px;font-size:1rem;font-family:inherit;
+    min-height:150px;line-height:1.5;resize:vertical;display:block;
   }
   .text-input:focus{outline:none;border-color:var(--violet);}
+  .reveal-answer{margin-top:8px;font-size:.95rem;background:#eef7f0;border:1px solid #a7e0bf;color:#166534;border-radius:8px;padding:8px 10px;}
 
   .btn{
     background:var(--violet);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:.95rem;
@@ -641,7 +647,7 @@ const DAY1_EXTRA = [
         choices:['He is locked out of his house','He lost his umbrella','He is late for school','He cannot find his shoes'],
         answer:0, hint:['Look at the beginning of the story','His house key is gone &rarr; he is locked out'] },
       { kind:'text', prompt:'What does Sam use to solve his problem? (A few words.)',
-        answers:['spare key','the spare key','a spare key','flowerpot key','key under the flowerpot'],
+        answers:['spare key','the spare key','a spare key','flowerpot key','the flowerpot key','key under the flowerpot','the key under the flowerpot','spare key under the flowerpot','the spare key under the flowerpot','key','the key','a key','spare'],
         hint:['Look near the end of the story','He finds the spare key hidden under the flowerpot'] }
     ] }
 ];
@@ -834,11 +840,20 @@ function countQuestions(day){
 const STORAGE_KEY = 'laila_rocket_launch_v1';
 let state = loadState();
 if(!state.qlog) state.qlog = {};
+if(!state.inputs) state.inputs = {};
 function loadState(){
   try{ const raw = localStorage.getItem(STORAGE_KEY); if(raw) return JSON.parse(raw); }catch(e){}
-  return { completed:{}, answered:{}, qlog:{} };
+  return { completed:{}, answered:{}, qlog:{}, inputs:{} };
 }
 function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+
+/* Auto-save Laila's in-progress answer (text draft or selected option) the moment she types/clicks */
+function saveInput(day, idx, value){
+  if(!state.inputs) state.inputs = {};
+  state.inputs[day + '-' + idx] = value;
+  saveState();
+}
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function dayCorrectSet(day){ if(!state.answered[day]) state.answered[day] = []; return new Set(state.answered[day]); }
 
 /* Board */
@@ -852,6 +867,13 @@ function weekStats(w){
   const days = CURRICULUM.filter(d => d.week === w);
   const done = days.filter(d => state.completed[d.day]).length;
   return { total: days.length, done: done, days: days };
+}
+
+/* Progressive locking: Week 1 is always open; a later week unlocks only when the previous week is 100% done */
+function weekUnlocked(w){
+  if(w <= 1) return true;
+  const prev = weekStats(w - 1);
+  return prev.total > 0 && prev.done === prev.total;
 }
 
 function weekRing(done, total){
@@ -875,19 +897,24 @@ function renderBoard(){
     const panel = document.createElement('div');
     panel.className = 'week-panel';
 
+    const unlocked = weekUnlocked(w);
+
     const header = document.createElement('button');
     header.type = 'button';
-    header.className = 'week-header';
+    header.className = 'week-header' + (unlocked ? '' : ' locked');
     header.id = headId;
     header.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     header.setAttribute('aria-controls', bodyId);
-    header.setAttribute('aria-label', WEEK_NAMES[w]+', '+WEEK_SUBS[w]+', '+st.done+' of '+st.total+' days complete. '+(isOpen?'Expanded':'Collapsed')+'. Activate to toggle.');
+    header.setAttribute('aria-label', WEEK_NAMES[w]+', '+WEEK_SUBS[w]+', '+st.done+' of '+st.total+' days complete. '+
+      (unlocked ? (isOpen?'Expanded':'Collapsed')+'. Activate to toggle.' : 'Locked until Week '+(w-1)+' is finished.'));
+    const rightSide = unlocked
+      ? ('<span class="week-count">'+st.done+'/'+st.total+' days</span>'+weekRing(st.done, st.total))
+      : ('<span class="week-lock">🔒 Locked</span>'+weekRing(st.done, st.total));
     header.innerHTML =
-      '<span class="week-emoji" aria-hidden="true">'+WEEK_EMOJI[w]+'</span>'+
+      '<span class="week-emoji" aria-hidden="true">'+(unlocked ? WEEK_EMOJI[w] : '🔒')+'</span>'+
       '<span class="week-head-text"><span class="wh-name">'+WEEK_NAMES[w]+'</span>'+
         '<span class="wh-blurb">'+WEEK_SUBS[w]+'</span></span>'+
-      '<span class="week-count">'+st.done+'/'+st.total+' days</span>'+
-      weekRing(st.done, st.total)+
+      rightSide+
       '<span class="week-chevron" aria-hidden="true">▶</span>';
     header.addEventListener('click', () => toggleWeek(w));
 
@@ -897,7 +924,14 @@ function renderBoard(){
     bodyEl.setAttribute('role', 'region');
     bodyEl.setAttribute('aria-labelledby', headId);
     if(!isOpen) bodyEl.hidden = true;
-    st.days.forEach(d => bodyEl.appendChild(makeCard(d)));
+    if(unlocked){
+      st.days.forEach(d => bodyEl.appendChild(makeCard(d)));
+    } else {
+      const note = document.createElement('div');
+      note.className = 'week-locked-note';
+      note.innerHTML = '🔒 Finish all 7 days of Week '+(w-1)+' to unlock these lessons.';
+      bodyEl.appendChild(note);
+    }
 
     panel.appendChild(header);
     panel.appendChild(bodyEl);
@@ -959,6 +993,7 @@ function updateProgress(){
 
 /* Modal + questions */
 let activeDay = null;
+let attempts = {}; /* runtime consecutive-wrong counter per "day-idx" for the two-strike hint flow */
 
 /* Collect the unique real B.E.S.T. standard codes covered by a day's actual questions */
 function dayStandards(d){
@@ -989,6 +1024,7 @@ function updateDayNav(d){
 
 function openDay(dayNum){
   const d = CURRICULUM.find(x => x.day === dayNum);
+  if(!d || !weekUnlocked(d.week)) return;
   activeDay = d;
   document.getElementById('modalDay').textContent = 'Day ' + d.day + (d.review?' · Review':'');
   document.getElementById('modalTitle').textContent = d.title;
@@ -1036,12 +1072,12 @@ function renderTasks(d){
       html += '<div class="ela-wrap">';
       html += '<div class="passage"><h4>'+t.passageTitle+'</h4><p>'+t.passage+'</p></div>';
       html += '<div class="ela-questions">';
-      t.questions.forEach(q => { html += renderQuestion(q, qIndex, correct.has(qIndex)); qIndex++; });
+      t.questions.forEach(q => { html += renderQuestion(q, qIndex, d.day); qIndex++; });
       html += '</div></div></div>';
     } else {
       html += '<div class="task'+ph+'">';
       html += '<span class="task-tag tag-'+(t.tag||'math')+'">'+(t.tag==='ela'?'📖 Reading':'📐 Math')+'</span>';
-      html += renderQuestion(t, qIndex, correct.has(qIndex));
+      html += renderQuestion(t, qIndex, d.day);
       qIndex++;
       html += '</div>';
     }
@@ -1051,6 +1087,13 @@ function renderTasks(d){
   body.querySelectorAll('[data-check]').forEach(btn => {
     btn.addEventListener('click', () => checkAnswer(d, parseInt(btn.getAttribute('data-check'))));
   });
+  /* Auto-save: persist every keystroke and option change immediately */
+  body.querySelectorAll('.text-input').forEach(inp => {
+    inp.addEventListener('input', () => saveInput(d.day, inp.id.replace('input',''), inp.value));
+  });
+  body.querySelectorAll('input[type="radio"]').forEach(r => {
+    r.addEventListener('change', () => saveInput(d.day, r.name.replace('q',''), r.value));
+  });
   const bBack = document.getElementById('bannerBackBtn'); if(bBack) bBack.addEventListener('click', backToWeek);
   const bNext = document.getElementById('bannerNextBtn'); if(bNext) bNext.addEventListener('click', goNextDay);
   updateTaskProgress(d);
@@ -1058,17 +1101,19 @@ function renderTasks(d){
   maybeShowBanner(d);
 }
 
-function renderQuestion(q, idx, alreadyCorrect){
+function renderQuestion(q, idx, dayNum){
+  const saved = (state.inputs && state.inputs[dayNum + '-' + idx] !== undefined) ? state.inputs[dayNum + '-' + idx] : '';
   let h = '<div class="question" data-q="'+idx+'">';
   h += '<p class="q-prompt">'+q.prompt+'</p>';
   if(q.kind === 'mc'){
     h += '<div class="choices" role="radiogroup" aria-label="Answer choices for question '+(idx+1)+'">';
     q.choices.forEach((c,ci) => {
-      h += '<label class="choice"><input type="radio" name="q'+idx+'" value="'+ci+'" aria-label="'+stripTags(c)+'"><span>'+c+'</span></label>';
+      const sel = (String(saved) === String(ci)) ? ' checked' : '';
+      h += '<label class="choice"><input type="radio" name="q'+idx+'" value="'+ci+'"'+sel+' aria-label="'+stripTags(c)+'"><span>'+c+'</span></label>';
     });
     h += '</div>';
   } else {
-    h += '<input class="text-input" type="text" id="input'+idx+'" aria-label="Type your answer for question '+(idx+1)+'" placeholder="Type your answer here..." autocomplete="off">';
+    h += '<textarea class="text-input" id="input'+idx+'" rows="6" aria-label="Type your answer for question '+(idx+1)+'" placeholder="Type your answer here...">'+escapeHtml(saved)+'</textarea>';
   }
   h += '<button class="btn" data-check="'+idx+'" aria-label="Check Laila\'s answer for question '+(idx+1)+'">Check Answer</button>';
   h += '<div class="feedback" id="fb'+idx+'" role="status" aria-live="polite"></div>';
@@ -1116,60 +1161,104 @@ function logAttempt(d, idx, correct){
   saveState();
 }
 
-function normalize(s){ return String(s).trim().toLowerCase().replace(/[.,!?;:'"]+$/,'').replace(/\s+/g,' '); }
+/* Child-friendly normalization: lowercase, strip ALL common punctuation, collapse spaces, trim.
+   Applied to BOTH the answer key and her input so comparisons are highly typing-tolerant.
+   (Keeps "/" so fraction answers like 5/8 still compare correctly.) */
+function normalize(s){
+  return String(s)
+    .toLowerCase()
+    .replace(/[.,!?;:'"`’‘“”()\[\]{}]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 function checkAnswer(d, idx){
   const q = questionByIndex(d, idx);
   const fb = document.getElementById('fb'+idx);
+  const key = d.day + '-' + idx;
   let isCorrect = false;
 
   if(q.kind === 'mc'){
     const sel = document.querySelector('input[name="q'+idx+'"]:checked');
-    if(!sel){ showFeedback(fb, null, q, 'Pick an answer first, Laila! 💜'); return; }
+    if(!sel){ showFeedback(fb, 'prompt', q, 'Pick an answer first, Laila! 💜'); return; }
     isCorrect = (parseInt(sel.value) === q.answer);
-    document.querySelectorAll('input[name="q'+idx+'"]').forEach((inp) => {
-      const lab = inp.closest('.choice');
-      lab.classList.remove('correct','wrong');
-      if(parseInt(inp.value) === q.answer) lab.classList.add('correct');
-      else if(inp.checked) lab.classList.add('wrong');
-    });
   } else {
     const inp = document.getElementById('input'+idx);
     const val = normalize(inp.value);
-    if(!val){ showFeedback(fb, null, q, 'Type your answer first, Laila! 💜'); return; }
+    if(!val){ showFeedback(fb, 'prompt', q, 'Type your answer first, Laila! 💜'); return; }
     isCorrect = q.answers.some(a => normalize(a) === val);
-    inp.style.borderColor = isCorrect ? 'var(--good)' : 'var(--bad)';
   }
 
   logAttempt(d, idx, isCorrect);
 
   if(isCorrect){
+    attempts[key] = 0;
+    if(q.kind === 'mc') highlightMC(idx, q, true);
+    else document.getElementById('input'+idx).style.borderColor = 'var(--good)';
     const set = dayCorrectSet(d.day);
     set.add(idx);
     state.answered[d.day] = Array.from(set);
     saveState();
-    showFeedback(fb, true, q, q.placeholder ? 'Correct! (This is a sample question.) 🌟' : 'Correct, Laila! Great job! 🌟');
+    showFeedback(fb, 'ok', q, q.placeholder ? 'Correct! (This is a sample question.) 🌟' : 'Correct, Laila! Great job! 🌟');
     updateTaskProgress(d);
     checkDayCompletion(d);
   } else {
-    showFeedback(fb, false, q);
+    attempts[key] = (attempts[key] || 0) + 1;
+    const reveal = attempts[key] >= 2;   /* only reveal the answer on the 2nd consecutive miss */
+    if(q.kind === 'mc') highlightMC(idx, q, reveal);
+    else document.getElementById('input'+idx).style.borderColor = 'var(--bad)';
+    showFeedback(fb, reveal ? 'reveal' : 'clue', q);
   }
 }
 
-function showFeedback(fb, ok, q, customMsg){
-  fb.className = 'feedback show ' + (ok===true?'ok':'no');
-  if(ok === true){
+/* Highlight MC choices. reveal=true marks the correct choice green; otherwise only the chosen wrong one is flagged. */
+function highlightMC(idx, q, reveal){
+  document.querySelectorAll('input[name="q'+idx+'"]').forEach(inp => {
+    const lab = inp.closest('.choice');
+    lab.classList.remove('correct','wrong');
+    const isRight = parseInt(inp.value) === q.answer;
+    if(reveal && isRight) lab.classList.add('correct');
+    else if(inp.checked && !isRight) lab.classList.add('wrong');
+  });
+}
+
+function showFeedback(fb, mode, q, customMsg){
+  if(mode === 'ok'){
+    fb.className = 'feedback show ok';
     fb.innerHTML = '<div class="fb-title">✅ '+(customMsg||'Correct!')+'</div>';
-  } else if(ok === false){
-    let steps = '<div class="fb-title">💡 Not quite — here\'s how it works:</div><div class="hint-steps">';
-    (q.hint||['Try again, Laila!']).forEach((s,i) => {
-      steps += '<div class="hint-step"><span class="num">'+(i+1)+'</span><span>'+s+'</span></div>';
-    });
-    steps += '</div>';
-    fb.innerHTML = steps;
-  } else {
-    fb.innerHTML = '<div class="fb-title">👉 '+customMsg+'</div>';
+    return;
   }
+  if(mode === 'prompt'){
+    fb.className = 'feedback show no';
+    fb.innerHTML = '<div class="fb-title">👉 '+customMsg+'</div>';
+    return;
+  }
+  const hints = q.hint || [];
+  if(mode === 'clue'){
+    /* First miss: give a clue WITHOUT the final answer (drop the last step, which usually holds it) */
+    const clue = hints.length > 1 ? hints.slice(0, -1) : hints.slice();
+    fb.className = 'feedback show no';
+    let html = '<div class="fb-title">💡 Not quite — here\'s a clue. Try once more!</div><div class="hint-steps">';
+    (clue.length ? clue : ['Take another careful look and give it one more try!']).forEach((s,i) => {
+      html += '<div class="hint-step"><span class="num">'+(i+1)+'</span><span>'+s+'</span></div>';
+    });
+    html += '</div>';
+    fb.innerHTML = html;
+    return;
+  }
+  /* mode === 'reveal' : second consecutive miss — show the full worked steps and the definitive answer */
+  fb.className = 'feedback show no';
+  let html = '<div class="fb-title">💡 Here\'s how it works:</div><div class="hint-steps">';
+  (hints.length ? hints : ['Keep practicing — you\'ve got this!']).forEach((s,i) => {
+    html += '<div class="hint-step"><span class="num">'+(i+1)+'</span><span>'+s+'</span></div>';
+  });
+  html += '</div>';
+  if(q.kind === 'text' && q.answers && q.answers.length){
+    html += '<div class="reveal-answer">✅ Answer: <b>'+q.answers[0]+'</b></div>';
+  } else if(q.kind === 'mc'){
+    html += '<div class="reveal-answer">✅ The correct answer is highlighted in green above.</div>';
+  }
+  fb.innerHTML = html;
 }
 
 function updateTaskProgress(d){
@@ -1205,6 +1294,8 @@ document.getElementById('resetDayBtn').addEventListener('click', () => {
   state.answered[activeDay.day] = [];
   state.completed[activeDay.day] = false;
   Object.keys(state.qlog||{}).forEach(k => { if(k.indexOf(activeDay.day + '-') === 0) delete state.qlog[k]; });
+  Object.keys(state.inputs||{}).forEach(k => { if(k.indexOf(activeDay.day + '-') === 0) delete state.inputs[k]; });
+  Object.keys(attempts).forEach(k => { if(k.indexOf(activeDay.day + '-') === 0) delete attempts[k]; });
   saveState();
   renderTasks(activeDay);
   renderBoard();
