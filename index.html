@@ -806,11 +806,363 @@ const DAY7_EXTRA = [
     ] }
 ];
 
-/* Each Week 1 day = original tasks + extra tasks appended (keeps saved question indices stable) */
+/* ===================== WEEK 2 — The 5th-to-6th Bridge (Days 8-14) ===================== */
+
+/* Day 8 — MA.6.NSO.2.1 (multiply & divide decimals) & ELA.6.R.1.1 (plot & character) */
+const DAY8_TASKS = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila buys <b>6</b> packs of rocket stickers at <b>$3.25</b> each. How much does she spend in all?',
+    choices:['$18.50','$19.50','$19.05','$21.50'], answer:1,
+    hint:[ 'Break the price apart', '6 &times; 3 &rarr; 18', '6 &times; 0.25 &rarr; 1.50', '18 + 1.50 &rarr; $19.50' ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila cuts <b>14.4</b> meters of ribbon into <b>6</b> equal pieces. How many meters long is each piece? (Type just the number.)',
+    answers:['2.4','2.4 m','2.4 meters'],
+    hint:[ 'Ignore the decimal first &rarr; 144 &divide; 6', '144 &divide; 6 &rarr; 24', 'Put the decimal back &rarr; 2.4 meters' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The Tryout',
+    passage:'Mara had practiced her violin audition piece for six straight weeks. '+
+            'When she stepped onto the stage, the bright lights made the strings blur in front of her. '+
+            'Halfway through the second measure, her bow slipped and a sour note rang out. '+
+            'She froze for a heartbeat, then took a slow breath and started the phrase again. '+
+            'By the final note the room was silent, and then the judges began to clap.',
+    questions:[
+      { kind:'mc', prompt:'What is the main <b>conflict</b> Mara faces in this story?',
+        choices:['She forgets where the stage is','She makes a mistake during her audition and has to recover','She does not like the violin','She arrives late to the tryout'],
+        answer:1, hint:['Find the moment when something goes wrong','Her bow slips and a sour note rings out &rarr; she must recover'] },
+      { kind:'text', prompt:'What does Mara do right after she freezes? (A few words.)',
+        answers:['takes a breath','she takes a breath','takes a slow breath','breathes','starts again','she starts again','starts over','breathes and starts again'],
+        hint:['Look at the sentence right after she freezes','She takes a slow breath and starts the phrase again'] }
+    ] },
+  { kind:'mc', tag:'math',
+    prompt:'Laila\'s new rocket model is <b>2.5</b> times as tall as her old <b>1.4</b> meter model. How tall is the new model?',
+    choices:['3.5 m','3.9 m','2.9 m','35 m'], answer:0,
+    hint:[ 'Multiply without the decimals &rarr; 25 &times; 14 = 350', 'Count the decimal places &rarr; 1 + 1 = 2', 'Place the decimal &rarr; 3.50 m' ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila pays <b>$8.40</b> for <b>4</b> notebooks. How much does one notebook cost? (Type just the number.)',
+    answers:['2.1','2.10','$2.10','$2.1'],
+    hint:[ 'Ignore the decimal first &rarr; 840 &divide; 4', '840 &divide; 4 &rarr; 210', 'Put the decimal back &rarr; $2.10' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The New Kid',
+    passage:'On his first day, Theo sat alone at the far end of the cafeteria table. '+
+            'Priya noticed him staring at the same unopened lunch bag for ten whole minutes. '+
+            'She slid down the bench and asked if he liked comic books, holding up her own worn copy. '+
+            'Theo\'s shoulders finally dropped, and he pulled a folded drawing from his pocket. '+
+            'By the end of lunch, the two of them were sketching side by side.',
+    questions:[
+      { kind:'mc', prompt:'How does Priya\'s action change what happens in the story?',
+        choices:['It makes Theo move to another table','Her kindness helps Theo relax and open up','It causes an argument','It ends lunch early'],
+        answer:1, hint:['Compare Theo at the start and at the end','He sits alone &rarr; she talks to him &rarr; they sketch together'] },
+      { kind:'text', prompt:'Choose one word that best describes Priya. (One word.)',
+        answers:['kind','friendly','thoughtful','caring','welcoming','observant','nice','considerate'],
+        hint:['Think about why she slides down the bench','She reaches out to a lonely new kid &rarr; she is kind'] }
+    ] }
+];
+
+/* Day 9 — MA.5.FR.2.4 (divide unit fractions) & ELA.6.R.1.2 (theme development) */
+const DAY9_TASKS = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila shares '+frac(1,2)+' of a pizza equally among <b>3</b> friends. What fraction of the <b>whole</b> pizza does each friend get?',
+    choices:[frac(1,6),frac(1,5),frac(3,2),frac(2,3)], answer:0,
+    hint:[ 'Splitting a fraction into equal parts makes smaller pieces', frac(1,2)+' &divide; 3 &rarr; '+frac(1,'2 &times; 3'), 'Answer &rarr; '+frac(1,6) ] },
+  { kind:'text', tag:'math',
+    prompt:'How many '+frac(1,4)+'-cup scoops of flour are in <b>3</b> cups? (Type just the number.)',
+    answers:['12','12 scoops'],
+    hint:[ 'Each 1 cup holds 4 quarter-cup scoops', '3 cups &rarr; 3 &times; 4', '3 &times; 4 &rarr; 12 scoops' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The Broken Bicycle',
+    passage:'Owen\'s bike chain snapped a full mile from home on a hot afternoon. '+
+            'He sat down on the curb, ready to call his dad for a ride. '+
+            'Then he remembered the small toolkit his grandfather had given him last summer. '+
+            'It took three greasy tries, but the chain finally clicked back into place. '+
+            'Owen rode home slowly, prouder of that repair than of any race he had ever won.',
+    questions:[
+      { kind:'mc', prompt:'What is the <b>theme</b>, or lesson, of this story?',
+        choices:['Bikes break on hot days','Solving a problem yourself can feel better than winning','Always call for a ride','Grandfathers give good gifts'],
+        answer:1, hint:['A theme is the big lesson the whole story teaches','He fixes it himself &rarr; prouder than winning a race'] },
+      { kind:'text', prompt:'Choose one word that best describes Owen. (One word.)',
+        answers:['resourceful','determined','proud','persistent','independent','patient','capable'],
+        hint:['Think about how he solves the problem alone','He uses his own toolkit and keeps trying &rarr; resourceful / determined'] }
+    ] },
+  { kind:'mc', tag:'math',
+    prompt:'Laila cuts '+frac(1,3)+' of a ribbon into <b>4</b> equal pieces. Each piece is what fraction of the <b>whole</b> ribbon?',
+    choices:[frac(1,7),frac(1,12),frac(4,3),frac(3,4)], answer:1,
+    hint:[ 'Splitting into more parts makes each part smaller', frac(1,3)+' &divide; 4 &rarr; '+frac(1,'3 &times; 4'), 'Answer &rarr; '+frac(1,12) ] },
+  { kind:'text', tag:'math',
+    prompt:'How many '+frac(1,2)+'-liter bottles can Laila fill from <b>5</b> liters of water? (Type just the number.)',
+    answers:['10','10 bottles'],
+    hint:[ 'Each 1 liter fills 2 half-liter bottles', '5 liters &rarr; 5 &times; 2', '5 &times; 2 &rarr; 10 bottles' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The Last Slice',
+    passage:'There was exactly one slice of birthday cake left, and both twins wanted it. '+
+            'Nina reached for the plate, then noticed Jonah\'s disappointed face. '+
+            'She thought about how he had given her the window seat for the whole car ride. '+
+            'Without a word, she cut the slice in half and slid the bigger piece toward him. '+
+            'Jonah grinned, and somehow the cake tasted better than it would have whole.',
+    questions:[
+      { kind:'mc', prompt:'What <b>theme</b> does this story develop?',
+        choices:['Cake tastes best on birthdays','Sharing with others can bring more happiness than keeping something for yourself','Twins always argue','Window seats are the best seats'],
+        answer:1, hint:['Look at how Nina feels after she shares','She gives him the bigger piece &rarr; the cake tastes better'] },
+      { kind:'text', prompt:'Choose one word that best describes Nina. (One word.)',
+        answers:['generous','kind','fair','thoughtful','selfless','caring','considerate'],
+        hint:['Think about what she does with the last slice','She gives away the bigger piece &rarr; generous'] }
+    ] }
+];
+
+/* Day 10 — MA.6.NSO.2.2 (multi-digit division) & ELA.6.R.2.3 (author's use of evidence) */
+const DAY10_TASKS = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila solves <b>936 &divide; 12</b>. What is the quotient?',
+    choices:['76','78','83','88'], answer:1,
+    hint:[ '12 &times; 70 &rarr; 840', '936 &minus; 840 &rarr; 96', '96 &divide; 12 &rarr; 8', '70 + 8 &rarr; 78' ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila packs <b>425</b> stickers into bags of <b>25</b>. How many full bags does she make? (Type just the number.)',
+    answers:['17','17 bags'],
+    hint:[ '25 &times; 10 &rarr; 250', '425 &minus; 250 &rarr; 175', '175 &divide; 25 &rarr; 7', '10 + 7 &rarr; 17 bags' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'Should School Start Later?',
+    passage:'Many experts argue that schools should start later in the morning. '+
+            'Studies show that teenagers naturally fall asleep later at night, which makes early alarms especially hard. '+
+            'One large survey found that students at later-starting schools reported much better focus in class. '+
+            'Researchers also recorded fewer tardy arrivals after start times moved back by one hour. '+
+            'Supporters say these findings make a strong case for changing the schedule.',
+    questions:[
+      { kind:'mc', prompt:'What kind of <b>evidence</b> does the author use to support later start times?',
+        choices:['Personal opinions from students','Survey results and research records about focus and tardiness','A famous quotation','A made-up story'],
+        answer:1, hint:['Look for facts the author reports, not feelings','A survey about focus + records of fewer tardies &rarr; research evidence'] },
+      { kind:'text', prompt:'By how many hours did start times move back in the research? (Type just the number.)',
+        answers:['1','one','1 hour','one hour'],
+        hint:['Look at the sentence about tardy arrivals','Start times moved back by one hour'] }
+    ] },
+  { kind:'mc', tag:'math',
+    prompt:'Laila shares <b>154</b> pencils equally among <b>12</b> classmates. How many does each get, and how many are left over?',
+    choices:['12 each, 10 left over','13 each, 2 left over','12 each, 8 left over','11 each, 22 left over'], answer:0,
+    hint:[ '12 &times; 12 &rarr; 144', '154 &minus; 144 &rarr; 10', 'So each gets 12 with 10 left over' ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila divides <b>1,008 &divide; 24</b>. What is the quotient? (Type just the number.)',
+    answers:['42'],
+    hint:[ '24 &times; 40 &rarr; 960', '1008 &minus; 960 &rarr; 48', '48 &divide; 24 &rarr; 2', '40 + 2 &rarr; 42' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'Paper or Screen?',
+    passage:'Some people claim that reading on a screen is just as good as reading on paper. '+
+            'Several classroom studies, however, suggest otherwise. '+
+            'In one experiment, students who read a printed article remembered more details than those who read the very same article on a tablet. '+
+            'Teachers also observed that the paper readers took far more notes in the margins. '+
+            'The author uses these results to argue that print still has real advantages.',
+    questions:[
+      { kind:'mc', prompt:'Which <b>evidence</b> does the author use to support the argument?',
+        choices:['Results from classroom studies and teacher observations','A dictionary definition','A poem about books','The author\'s own guess'],
+        answer:0, hint:['Find the facts the author reports','An experiment + what teachers observed &rarr; study evidence'] },
+      { kind:'text', prompt:'According to the passage, which group remembered more details? (One or two words.)',
+        answers:['print readers','paper readers','print','paper','printed','the print readers','the paper readers'],
+        hint:['Look at the experiment sentence','Students who read the printed article remembered more'] }
+    ] }
+];
+
+/* Day 11 — MA.5.AR.3.1 (number patterns) & ELA.6.R.2.4 (tracing an argument) */
+const DAY11_TASKS = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila\'s pattern starts at <b>3</b> and adds <b>5</b> each time: 3, 8, 13, 18, ... What is the <b>6th</b> number in the pattern?',
+    choices:['23','28','33','25'], answer:1,
+    hint:[ 'The rule is: add 5 each step', '5th number &rarr; 18 + 5 = 23', '6th number &rarr; 23 + 5 = 28' ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila\'s rule is &ldquo;multiply by 2&rdquo;: 4, 8, 16, 32, ... What is the <b>next</b> number? (Type just the number.)',
+    answers:['64'],
+    hint:[ 'Check the rule &rarr; each number doubles', '16 &times; 2 = 32', '32 &times; 2 &rarr; 64' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'A Library for the East Side',
+    passage:'Our town should build a new public library branch on the east side. '+
+            'Right now, families there ride the bus for forty minutes just to reach the nearest branch. '+
+            'A recent count showed that over 900 students live within one mile of the proposed site. '+
+            'Neighboring towns that opened new branches saw library visits double within two years. '+
+            'For all of these reasons, the east side deserves a library of its own.',
+    questions:[
+      { kind:'mc', prompt:'What is the author\'s main <b>claim</b>?',
+        choices:['Buses are too slow','The town should build a new library branch on the east side','Libraries should close earlier','Students read too little'],
+        answer:1, hint:['The claim is the main thing the author wants you to agree with','It is stated in the very first sentence'] },
+      { kind:'text', prompt:'How many students live within one mile of the proposed site? (Type just the number.)',
+        answers:['900','over 900','more than 900'],
+        hint:['Look for the sentence with the recent count','Over 900 students live within a mile'] }
+    ] },
+  { kind:'mc', tag:'math',
+    prompt:'Pattern A starts at 0 and adds 4: 0, 4, 8, 12, ... Pattern B starts at 0 and adds 8: 0, 8, 16, 24, ... Each number in Pattern B is how many times the matching number in Pattern A?',
+    choices:['2 times','4 times','8 times','half as much'], answer:0,
+    hint:[ 'Line the patterns up and compare', '4 and 8 &rarr; 8 = 4 &times; 2', '8 and 16 &rarr; 16 = 8 &times; 2', 'So B is always 2 times A' ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila\'s pattern is 100, 90, 80, 70, ... What is the <b>7th</b> number? (Type just the number.)',
+    answers:['40'],
+    hint:[ 'The rule is: subtract 10 each step', '5th &rarr; 70 &minus; 10 = 60', '6th &rarr; 60 &minus; 10 = 50', '7th &rarr; 50 &minus; 10 = 40' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'Water Bottles in Class',
+    passage:'Students should be allowed to bring water bottles to every class. '+
+            'Doctors note that even mild dehydration can reduce concentration. '+
+            'A school in our district tried the policy and reported fewer complaints of headaches. '+
+            'Some teachers worried about spills, but clear bottle rules solved that problem quickly. '+
+            'The evidence suggests the benefits clearly outweigh the risks.',
+    questions:[
+      { kind:'mc', prompt:'How does the author respond to the concern about <b>spills</b>?',
+        choices:['By ignoring it completely','By explaining that clear bottle rules solved the problem','By saying teachers are wrong','By suggesting no drinks at all'],
+        answer:1, hint:['Find the sentence that mentions the worry','The author answers it &rarr; clear bottle rules fixed it'] },
+      { kind:'text', prompt:'According to the author, what can mild dehydration reduce? (One word.)',
+        answers:['concentration','focus'],
+        hint:['Look at what the doctors note','Mild dehydration can reduce concentration'] }
+    ] }
+];
+
+/* Day 12 — MA.5.DP.1.1 (representing data) & ELA.6.R.3.1 (interpreting figurative language) */
+const DAY12_TASKS = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila records how many books her friends read this month: <b>3, 5, 4, 5, 8</b>. How many books did they read in all?',
+    choices:['24','25','26','20'], answer:1,
+    hint:[ 'Add them in order', '3 + 5 &rarr; 8', '8 + 4 &rarr; 12', '12 + 5 + 8 &rarr; 25' ] },
+  { kind:'text', tag:'math',
+    prompt:'Using Laila\'s same data (<b>3, 5, 4, 5, 8</b>), which number appears most often? (This is the <b>mode</b>. Type just the number.)',
+    answers:['5'],
+    hint:[ 'Count how many times each number shows up', '5 appears twice', 'Every other number appears once &rarr; the mode is 5' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The Lighthouse',
+    passage:'The old lighthouse stood watch over the harbor, a stubborn guard who never blinked. '+
+            'Waves threw themselves against the rocks below, roaring like a crowd at a game. '+
+            'On calm nights, the beam swept the water as gently as a hand smoothing a blanket. '+
+            'Sailors said the light was a promise you could see from miles away.',
+    questions:[
+      { kind:'mc', prompt:'&ldquo;Roaring like a crowd at a game&rdquo; is an example of which kind of figurative language?',
+        choices:['simile','metaphor','idiom','fact'],
+        answer:0, hint:['Look for the comparison word','It compares waves to a crowd using &ldquo;like&rdquo; &rarr; a simile'] },
+      { kind:'text', prompt:'The lighthouse is called &ldquo;a stubborn guard who never blinked.&rdquo; Giving human traits to an object is called ___? (One word.)',
+        answers:['personification'],
+        hint:['A lighthouse cannot really be stubborn or blink','Human traits given to an object &rarr; personification'] }
+    ] },
+  { kind:'mc', tag:'math',
+    prompt:'Using Laila\'s data (<b>3, 5, 4, 5, 8</b>), what is the <b>range</b> (the largest number minus the smallest)?',
+    choices:['3','5','8','4'], answer:1,
+    hint:[ 'Find the largest &rarr; 8', 'Find the smallest &rarr; 3', 'Subtract &rarr; 8 &minus; 3 = 5' ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila\'s line plot shows <b>2</b> students with 1 pet, <b>3</b> students with 2 pets, and <b>1</b> student with 4 pets. How many students are in her survey in all? (Type just the number.)',
+    answers:['6','6 students'],
+    hint:[ 'Add the number of students at each mark', '2 + 3 &rarr; 5', '5 + 1 &rarr; 6 students' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'The Homework Mountain',
+    passage:'Homework piled onto Jordan\'s desk like snow that would not stop falling. '+
+            'Each worksheet felt heavier than the one before it. '+
+            'By nine o\'clock, his pencil was a lead weight in his hand. '+
+            'Then his sister brought him a mug of cocoa, and the mountain suddenly looked climbable.',
+    questions:[
+      { kind:'mc', prompt:'&ldquo;Homework piled... like snow that would not stop falling&rdquo; helps the reader understand that:',
+        choices:['It was snowing outside','Jordan feels overwhelmed by how much homework there is','Jordan likes winter','The homework was cold'],
+        answer:1, hint:['Think about what endless falling snow feels like','Snow that never stops &rarr; the work feels endless and overwhelming'] },
+      { kind:'text', prompt:'&ldquo;His pencil was a lead weight&rdquo; compares two things <b>without</b> using &ldquo;like&rdquo; or &ldquo;as.&rdquo; What is this called? (One word.)',
+        answers:['metaphor','a metaphor'],
+        hint:['There is no &ldquo;like&rdquo; or &ldquo;as&rdquo; in this comparison','A direct comparison &rarr; a metaphor'] }
+    ] }
+];
+
+/* Day 13 — MA.6.NSO.3.4 (GCF & LCM) & ELA.6.V.1.2 (Greek & Latin roots) */
+const DAY13_TASKS = [
+  { kind:'mc', tag:'math',
+    prompt:'Laila wants to split <b>24</b> stickers and <b>36</b> pencils into identical party bags with nothing left over. What is the <b>greatest</b> number of bags she can make?',
+    choices:['6','8','12','18'], answer:2,
+    hint:[ 'Factors of 24 &rarr; 1, 2, 3, 4, 6, 8, 12, 24', 'Factors of 36 &rarr; 1, 2, 3, 4, 6, 9, 12, 18, 36', 'Greatest number in both lists &rarr; 12' ] },
+  { kind:'text', tag:'math',
+    prompt:'Hot dogs come in packs of <b>8</b> and buns come in packs of <b>12</b>. What is the least number of each Laila must buy to have equal amounts? (Type just the number.)',
+    answers:['24'],
+    hint:[ 'Multiples of 8 &rarr; 8, 16, 24, 32', 'Multiples of 12 &rarr; 12, 24, 36', 'Least number in both lists &rarr; 24' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'Word Detectives',
+    passage:'Many English words hide clues inside them. '+
+            'The root &ldquo;aqua&rdquo; comes from Latin and means water, which is why an aquarium holds fish and an aqueduct carries water across a valley. '+
+            'The Greek root &ldquo;tele&rdquo; means far off, so a telescope helps you see distant stars and a telephone carries a voice over a distance. '+
+            'Once Laila learned these roots, unfamiliar words started to feel less like puzzles. '+
+            'She could often guess a meaning before she ever opened a dictionary.',
+    questions:[
+      { kind:'mc', prompt:'Based on the passage, what does the Greek root <b>&ldquo;tele&rdquo;</b> mean?',
+        choices:['water','far off, or at a distance','small','sound'],
+        answer:1, hint:['Look at the telescope and telephone examples','Both work across a distance &rarr; tele = far off'] },
+      { kind:'text', prompt:'The Latin root &ldquo;aqua&rdquo; means ___? (One word.)',
+        answers:['water'],
+        hint:['Think about an aquarium and an aqueduct','Both involve water'] }
+    ] },
+  { kind:'mc', tag:'math',
+    prompt:'What is the <b>greatest common factor</b> of <b>18</b> and <b>30</b>?',
+    choices:['3','6','9','15'], answer:1,
+    hint:[ 'Factors of 18 &rarr; 1, 2, 3, 6, 9, 18', 'Factors of 30 &rarr; 1, 2, 3, 5, 6, 10, 15, 30', 'Greatest number in both lists &rarr; 6' ] },
+  { kind:'text', tag:'math',
+    prompt:'Laila has swim practice every <b>4</b> days and piano every <b>6</b> days. If both are today, in how many days will they land on the same day again? (Type just the number.)',
+    answers:['12','12 days'],
+    hint:[ 'Multiples of 4 &rarr; 4, 8, 12, 16', 'Multiples of 6 &rarr; 6, 12, 18', 'Least number in both lists &rarr; 12 days' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'Prefixes and Suffixes',
+    passage:'Prefixes can flip a word\'s meaning in a single syllable. '+
+            'The prefix &ldquo;un-&rdquo; means not, so an unhappy camper is simply not happy. '+
+            'The prefix &ldquo;re-&rdquo; means again, which is why you reread a page or rebuild a model. '+
+            'Suffixes work at the other end of a word: adding &ldquo;-less&rdquo; to fear gives fearless, meaning without fear. '+
+            'Learning just a handful of these word parts can unlock hundreds of new words.',
+    questions:[
+      { kind:'mc', prompt:'Based on the passage, what does the prefix <b>&ldquo;re-&rdquo;</b> mean?',
+        choices:['not','again','without','before'],
+        answer:1, hint:['Look at the reread and rebuild examples','You do both of those actions again &rarr; re- = again'] },
+      { kind:'text', prompt:'The suffix &ldquo;-less&rdquo; means ___? (One or two words.)',
+        answers:['without','not having','lacking','with out','no'],
+        hint:['Think about the word fearless','Fearless means without fear'] }
+    ] }
+];
+
+/* Day 14 — Weekly Review 2 (mixed 5th-to-6th bridge skills) */
+const DAY14_TASKS = [
+  { kind:'mc', tag:'math',
+    prompt:'<b>Review &mdash; Decimals:</b> Laila buys <b>4</b> markers at <b>$1.75</b> each. How much does she spend in all?',
+    choices:['$6.75','$7.00','$7.25','$6.50'], answer:1,
+    hint:[ 'Break the price apart', '4 &times; 1 &rarr; 4.00', '4 &times; 0.75 &rarr; 3.00', '4.00 + 3.00 &rarr; $7.00' ] },
+  { kind:'text', tag:'math',
+    prompt:'<b>Review &mdash; Fractions:</b> How many '+frac(1,3)+'-cup scoops are in <b>4</b> cups? (Type just the number.)',
+    answers:['12','12 scoops'],
+    hint:[ 'Each 1 cup holds 3 third-cup scoops', '4 cups &rarr; 4 &times; 3', '4 &times; 3 &rarr; 12 scoops' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'Ivy Takes the Stage',
+    passage:'Ivy had never spoken in front of the whole school before. '+
+            'Her hands shook so badly that her note cards rattled like dry leaves. '+
+            'She looked up, found her little brother grinning in the third row, and steadied herself. '+
+            'The words came out slowly at first, then faster and clearer. '+
+            'When she finished, Ivy realized the fear had been much bigger in her mind than it was on the stage.',
+    questions:[
+      { kind:'mc', prompt:'What is the <b>theme</b> of this story?',
+        choices:['Note cards are hard to hold','Facing a fear often makes it smaller than it seemed','Little brothers are distracting','Speeches should be short'],
+        answer:1, hint:['Look at what Ivy realizes at the end','The fear was bigger in her mind than on the stage'] },
+      { kind:'text', prompt:'&ldquo;Rattled like dry leaves&rdquo; is an example of which kind of figurative language? (One word.)',
+        answers:['simile','a simile'],
+        hint:['Look for the comparison word','It compares using &ldquo;like&rdquo; &rarr; a simile'] }
+    ] },
+  { kind:'mc', tag:'math',
+    prompt:'<b>Review &mdash; Factors:</b> What is the <b>greatest common factor</b> of <b>20</b> and <b>30</b>?',
+    choices:['5','10','15','2'], answer:1,
+    hint:[ 'Factors of 20 &rarr; 1, 2, 4, 5, 10, 20', 'Factors of 30 &rarr; 1, 2, 3, 5, 6, 10, 15, 30', 'Greatest number in both lists &rarr; 10' ] },
+  { kind:'text', tag:'math',
+    prompt:'<b>Review &mdash; Division:</b> Laila divides <b>875 &divide; 25</b>. What is the quotient? (Type just the number.)',
+    answers:['35'],
+    hint:[ '25 &times; 30 &rarr; 750', '875 &minus; 750 &rarr; 125', '125 &divide; 25 &rarr; 5', '30 + 5 &rarr; 35' ] },
+  { kind:'passage', tag:'ela',
+    passageTitle:'Bins in Every Classroom',
+    passage:'Our school should add a recycling program to every classroom. '+
+            'Last year our students threw away more than 4,000 plastic bottles. '+
+            'A nearby school that placed bins in each room cut its waste almost in half. '+
+            'Custodians there reported that sorting actually became easier, not harder. '+
+            'With numbers like these, recycling bins are a small change with a big payoff.',
+    questions:[
+      { kind:'mc', prompt:'What is the author\'s main <b>claim</b>?',
+        choices:['Custodians work too hard','The school should add a recycling program to every classroom','Plastic bottles are cheap','Students should bring less lunch'],
+        answer:1, hint:['The claim is what the author wants you to agree with','It is stated in the first sentence'] },
+      { kind:'text', prompt:'How many plastic bottles did students throw away last year? (Type just the number.)',
+        answers:['4000','4,000','more than 4000','more than 4,000','over 4000','over 4,000'],
+        hint:['Look for the number in the second sentence','More than 4,000 plastic bottles'] }
+    ] }
+];
+
+/* Week 1 = original tasks + extras appended (keeps saved question indices stable). Week 2 authored in full. */
 const AUTHORED = {
   1: DAY1_TASKS.concat(DAY1_EXTRA), 2: DAY2_TASKS.concat(DAY2_EXTRA), 3: DAY3_TASKS.concat(DAY3_EXTRA),
   4: DAY4_TASKS.concat(DAY4_EXTRA), 5: DAY5_TASKS.concat(DAY5_EXTRA), 6: DAY6_TASKS.concat(DAY6_EXTRA),
-  7: DAY7_TASKS.concat(DAY7_EXTRA)
+  7: DAY7_TASKS.concat(DAY7_EXTRA),
+  8: DAY8_TASKS, 9: DAY9_TASKS, 10: DAY10_TASKS, 11: DAY11_TASKS,
+  12: DAY12_TASKS, 13: DAY13_TASKS, 14: DAY14_TASKS
 };
 
 /* ===================== Assemble curriculum ===================== */
